@@ -5,4 +5,5 @@
   "routes": [
     { "src": "/", "dest": "index.go" },
     { "src": "/dw", "dest": "index.go" }
+	]
 }
