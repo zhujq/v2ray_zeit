@@ -2,5 +2,8 @@
   "version": 2,
   "name": "v2ray",
   "builds": [{ "src": "*.go", "use": "@now/go" }],
-  "routes": [{ "src": "/", "dest": "index.go" }]
+  "routes": [
+  	{ "src": "/", "dest": "index.go" },
+  	{ "src": "/dw", "dest": "index.go" }
+  ]
 }

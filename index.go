@@ -15,7 +15,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "PATH:"+r.URL.Path+"\r\n")
 	fmt.Fprintf(w, "SCHEME:"+r.URL.Scheme+"\r\n")
 	fmt.Fprintf(w, "HOST:"+r.URL.Host+"URL-End\r\n")
-    fmt.Fprintf(w, "HOST:"+r.Proto+"\r\n")
+    fmt.Fprintf(w, "Proto:"+r.Proto+"\r\n")
 	fmt.Fprintf(w, "HOST:"+r.Host+"\r\n")
 	fmt.Fprintf(w, "RequestUrl:"+r.RequestURI+"\r\n")
 	if r.URL.Path == "/dw"{
