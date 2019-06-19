@@ -12,7 +12,7 @@ import(
 func main() {
         int status :=0
 
-        remote, err := url.Parse("http://v2ray.14065567.now.sh/dw")
+        remote, err := url.Parse("http://google.com")
         if err != nil {
                 panic(err)
         }
