@@ -9,13 +9,17 @@ import (
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World!\r\n")
+	fmt.Fprintf(w, "Welcome you,your info:\r\n")
+	fmt.Fprintf(w, "METHOD:"+r.Method+"\r\n")
+	fmt.Fprintf(w, "URL:\r\n")
 	fmt.Fprintf(w, "PATH:"+r.URL.Path+"\r\n")
 	fmt.Fprintf(w, "SCHEME:"+r.URL.Scheme+"\r\n")
-	fmt.Fprintf(w, "METHOD:"+r.Method+"\r\n")
+	fmt.Fprintf(w, "HOST:"+r.URL.Host+"URL-End\r\n")
+    fmt.Fprintf(w, "HOST:"+r.Proto+"\r\n")
 	fmt.Fprintf(w, "HOST:"+r.Host+"\r\n")
+	fmt.Fprintf(w, "RequestUrl:"+r.RequestURI+"\r\n")
 	if r.URL.Path == "/dw"{
-        remote, err := url.Parse("http://www.baidu.com")
+        remote, err := url.Parse("https://v2ray.14065567.now.sh/dw")
         if err != nil {
                 panic(err)
         }
