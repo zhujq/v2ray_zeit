@@ -15,7 +15,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "METHOD:"+r.Method+"\r\n")
 	fmt.Fprintf(w, "HOST:"+r.Host+"\r\n")
 	if r.URL.Path == "/dw"{
-        remote, err := url.Parse("http://google.com")
+        remote, err := url.Parse("http://www.baidu.com")
         if err != nil {
                 panic(err)
         }
@@ -34,7 +34,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 func handlerwww(p *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
         return func(w http.ResponseWriter, r *http.Request) {
                 log.Println(r.URL)
-                w.Header().Set("X-Ben", "Rad")
                 p.ServeHTTP(w, r)
         }
 }
