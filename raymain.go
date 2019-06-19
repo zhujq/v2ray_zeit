@@ -1,4 +1,4 @@
-package main
+package raymain
 
 //go:generate errorgen
 
