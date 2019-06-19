@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "name": "v2ray",
+  "builds": [{ "src": "/**/*.go", "use": "@now/go" }],
+  "routes": [
+    { "src": "/", "dest": "main.go" } 
+  ]
+}
