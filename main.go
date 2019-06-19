@@ -6,7 +6,7 @@ import(
         "net/url"
         "net/http"
         "net/http/httputil"
-        "raymain"
+       
 )
 
 func main() {
