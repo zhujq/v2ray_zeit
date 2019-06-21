@@ -25,7 +25,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         	}
 
         	defer resp.Body.Close()
-        	fmt.Fprintf(w, "Proxying...")
         	body, err := ioutil.ReadAll(resp.Body)
     		if err != nil {
           		panic(err)
@@ -33,6 +32,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
  
     		fmt.Fprintf(w,string(body))    
         default:
-        	
+
 	}
 }
