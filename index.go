@@ -5,39 +5,33 @@ import (
 	"fmt"
 	"net/url"
 	"net/http"
-	"net/http/httputil"
+	"io/ioutil"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome you,your info:\r\n")
-	fmt.Fprintf(w, "METHOD:"+r.Method+"\r\n")
-	fmt.Fprintf(w, "URL:\r\n")
-	fmt.Fprintf(w, "PATH:"+r.URL.Path+"\r\n")
-	fmt.Fprintf(w, "SCHEME:"+r.URL.Scheme+"\r\n")
-	fmt.Fprintf(w, "HOST:"+r.URL.Host+"URL-End\r\n")
-    fmt.Fprintf(w, "Proto:"+r.Proto+"\r\n")
-	fmt.Fprintf(w, "HOST:"+r.Host+"\r\n")
-	fmt.Fprintf(w, "RequestUrl:"+r.RequestURI+"\r\n")
+	fmt.Println(w, "Welcome you,your info:\r\n")
+	fmt.Println(w, "METHOD:"+r.Method+"\r\n")
+	fmt.Println(w, "URL:\r\n")
+	fmt.Println(w, "PATH:"+r.URL.Path+"\r\n")
+	fmt.Println(w, "SCHEME:"+r.URL.Scheme+"\r\n")
+	fmt.Println(w, "HOST:"+r.URL.Host+"URL-End\r\n")
+    fmt.Println(w, "Proto:"+r.Proto+"\r\n")
+	fmt.Println(w, "HOST:"+r.Host+"\r\n")
+	fmt.Println(w, "RequestUrl:"+r.RequestURI+"\r\n")
 	if r.URL.Path == "/dw"{
-        remote, err := url.Parse("https://v2ray.14065567.now.sh/dw")
+        resp, err := http.Get("http://www.google.com")
         if err != nil {
-                panic(err)
+            panic(err)
         }
 
-        proxy := httputil.NewSingleHostReverseProxy(remote)
-        fmt.Fprintf(w, "Proxying...")
-        http.HandleFunc("/dw", handlerwww(proxy))
-        if err != nil {
-                panic(err)
-        }
-       
+        defer resp.Body.Close()
+        fmt.Println(w, "Proxying...")
+        body, err := ioutil.ReadAll(resp.Body)
+    	if err != nil {
+          	panic(err)
+    	}
+ 
+    	fmt.Println(string(body))    
 
 	}
-}
-
-func handlerwww(p *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
-        return func(w http.ResponseWriter, r *http.Request) {
-                log.Println(r.URL)
-                p.ServeHTTP(w, r)
-        }
 }
