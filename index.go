@@ -31,7 +31,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
          		panic(err)
     		}
    
-            w.Write(resp.Body)
+            w.Write(body)
 
             if f, ok := w.(http.Flusher); ok {
 			f.Flush()
