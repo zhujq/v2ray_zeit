@@ -18,15 +18,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     		fmt.Fprintf(w, "Proto:"+r.Proto+"\r\n")
 			fmt.Fprintf(w, "HOST:"+r.Host+"\r\n")
 			fmt.Fprintf(w, "RequestUrl:"+r.RequestURI+"\r\n")
-		case "/google":
+		case "/dw":
         	resp, err := http.Get("http://www.google.com")
         	if err != nil {
             	panic(err)
         	}
 
         	defer resp.Body.Close()
-        	var body []byte
-        	body, err = ioutil.ReadAll(resp.Body)
+        	
+        	body, err := ioutil.ReadAll(resp.Body)
     		if err != nil {
          		panic(err)
     		}
