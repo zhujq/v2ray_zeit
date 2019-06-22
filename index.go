@@ -18,7 +18,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     		fmt.Fprintf(w, "Proto:"+r.Proto+"\r\n")
 			fmt.Fprintf(w, "HOST:"+r.Host+"\r\n")
 			fmt.Fprintf(w, "RequestUrl:"+r.RequestURI+"\r\n")
-		case "/dw":
+		case "/google/":
         	resp, err := http.Get("http://www.google.com")
         	if err != nil {
             	panic(err)
@@ -30,13 +30,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     		if err != nil {
          		panic(err)
     		}
-   		 //	w.Header().Set("Content-Type", "text/plain")
-         //   w.Write([]byte(body))
+   		 	w.Header().Set("content-type", "text/html;charset=utf-8")
+            w.Write([]byte(body))
 
           
-    		fmt.Fprintf(w,string(body))    
+    	//	fmt.Fprintf(w,string(body))    
 
-        default:
+        default:  // 
+        	
 
 	}
 }
