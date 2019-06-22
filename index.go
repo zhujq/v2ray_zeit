@@ -31,6 +31,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     		}
  
     		fmt.Fprintf(w,string(body))    
+    	case "/youtube"
+    	    w, err := http.Get("http://www.youtube.com")
+    	    if err != nil {
+            	panic(err)
+        	}
+
+        	defer w.Body.Close()
+        	if f, ok := w.(http.Flusher); ok {
+				f.Flush()
+			}
+
         default:
 
 	}
