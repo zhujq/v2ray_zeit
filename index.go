@@ -30,7 +30,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     		if err != nil {
          		panic(err)
     		}
-   			w.Header().Set("Content-Type", "text/plain")
+   		 //	w.Header().Set("Content-Type", "text/plain")
          //   w.Write([]byte(body))
 
           
