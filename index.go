@@ -31,10 +31,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
          		panic(err)
     		}
    			w.Header().Set("Content-Type", "text/plain")
-            w.Write([]byte(body))
+         //   w.Write([]byte(body))
 
           
-    	//	fmt.Fprintf(w,string(body))    
+    		fmt.Fprintf(w,string(body))    
 
         default:
 
