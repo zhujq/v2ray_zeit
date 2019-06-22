@@ -31,11 +31,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
          		panic(err)
     		}
    			w.Header().Set("Content-Type", "text/plain")
-            w.Write(body)
+            w.Write([]byte(body))
 
-            if f, ok := w.(http.Flusher); ok {
-			f.Flush()
-			}
+          
     	//	fmt.Fprintf(w,string(body))    
 
         default:
