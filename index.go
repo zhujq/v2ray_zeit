@@ -41,8 +41,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         	data, err = ioutil.ReadAll(resp.Body)
         	defer resp.Body.Close()
         	
-        	w.Data = data
 
+        	w.Write(data)
 			}
 
         default:
