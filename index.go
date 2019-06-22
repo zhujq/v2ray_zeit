@@ -18,7 +18,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     		fmt.Fprintf(w, "Proto:"+r.Proto+"\r\n")
 			fmt.Fprintf(w, "HOST:"+r.Host+"\r\n")
 			fmt.Fprintf(w, "RequestUrl:"+r.RequestURI+"\r\n")
-		case "/dw":
+		case "/google":
         	resp, err := http.Get("http://www.google.com")
         	if err != nil {
             	panic(err)
@@ -29,21 +29,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     		if err != nil {
           		panic(err)
     		}
- 
-    		fmt.Fprintf(w,string(body))    
-    	case "/youtube"
-    	    resp, err := http.Get("http://www.youtube.com")
-    	    if err != nil {
-            	panic(err)
-        	}
-
-        	var data []byte
-        	data, err = ioutil.ReadAll(resp.Body)
-        	defer resp.Body.Close()
-        	
-
-        	w.Write(data)
-			}
+   
+            w.Write(body)
+    	//	fmt.Fprintf(w,string(body))    
 
         default:
 
