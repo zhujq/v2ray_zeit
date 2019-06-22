@@ -25,13 +25,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         	}
 
         	defer resp.Body.Close()
-        	var body []byte
-        	body, err = ioutil.ReadAll(resp.Body)
-    		if err != nil {
-          		panic(err)
-    		}
+        //	var body []byte
+        //	body, err = ioutil.ReadAll(resp.Body)
+    	//	if err != nil {
+        // 		panic(err)
+    	//	}
    
-            w.Write(body)
+            w.Write(resp.Body)
     	//	fmt.Fprintf(w,string(body))    
 
         default:
