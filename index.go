@@ -36,7 +36,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
           
     		//	fmt.Fprintf(w,string(body))    
-    	case "/images/"
+    	case "/images/":
     	 	var str string
     	 	str = r.URL.Path
     	 	if strings.HasSuffix(str, "png"){
