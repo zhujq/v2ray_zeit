@@ -39,6 +39,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     	case "/images/":
     	 	var str string
     	 	str = r.URL.Path
+    	 	fmt.Fprintf(w, "PATH:"+r.URL.Path+"\r\n")
     	 	if strings.HasSuffix(str, "png"){
     	 		str = "http://www.google.com" + str
     	 		resp, err := http.Get(str)
