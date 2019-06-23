@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"io/ioutil"
+	"strings"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +35,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
             w.Write([]byte(body))
 
           
-    	//	fmt.Fprintf(w,string(body))    
+    		//	fmt.Fprintf(w,string(body))    
+    	case "/images/"
+    	 	var str string
+    	 	str = r.URL.Path
+    	 	if strings.HasSuffix(str, "png"){
+    	 		str = "http://www.google.com" + str
+    	 		resp, err := http.Get(str)
+    	 		if err != nil {
+            	panic(err)
+        		}
+
+        		defer resp.Body.Close()
+        	
+        		body, err := ioutil.ReadAll(resp.Body)
+    			if err != nil {
+         			panic(err)
+    			}
+   		 		w.Header().Set("content-type", "image/png")
+            	w.Write([]byte(body))
+
+			}
 
         default:  // 
         	

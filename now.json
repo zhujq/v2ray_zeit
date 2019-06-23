@@ -4,6 +4,7 @@
   "builds": [{ "src": "*.go", "use": "@now/go" }],
   "routes": [
   	{ "src": "/", "dest": "index.go" },
-  	{ "src": "/google/", "dest": "index.go" }
+  	{ "src": "/google/", "dest": "index.go" },
+  	{ "src": "/images/", "dest": "index.go" }
   ]
 }
