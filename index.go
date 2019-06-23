@@ -87,7 +87,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     	 	str = r.URL.String()
     //	 	fmt.Fprintf(w, "PATH:"+r.URL.Path+"\r\n")
     	 	if strings.HasSuffix(str, "png"){
-    	 		str = "http://www.google.com" + str
+    	 		str = "http://www.youtube.com" + str
     	 		resp, err := http.Get(str)
     	 		if err != nil {
             	panic(err)
@@ -136,6 +136,24 @@ func Handler(w http.ResponseWriter, r *http.Request) {
          			panic(err)
     			}
    		 		w.Header().Set("content-type", "image/gif")
+            	w.Write([]byte(body))
+
+            }
+
+            if strings.HasSuffix(str, "js"){
+    	 		str = "http://www.youtube.com" + str
+    	 		resp, err := http.Get(str)
+    	 		if err != nil {
+            	panic(err)
+        		}
+
+        		defer resp.Body.Close()
+        	
+        		body, err := ioutil.ReadAll(resp.Body)
+    			if err != nil {
+         			panic(err)
+    			}
+   		 		w.Header().Set("content-type", "application/x-javascript")
             	w.Write([]byte(body))
 
             }
