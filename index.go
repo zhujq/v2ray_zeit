@@ -84,7 +84,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         default:  // 
          //	case "/images/":
     	 	var str string
-    	 	str = r.URL.Path
+    	 	str = r.URL.String()
     //	 	fmt.Fprintf(w, "PATH:"+r.URL.Path+"\r\n")
     	 	if strings.HasSuffix(str, "png"){
     	 		str = "http://www.google.com" + str
@@ -102,7 +102,61 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    		 		w.Header().Set("content-type", "image/png")
             	w.Write([]byte(body))
 
-			}else {
+			}
+
+			if strings.HasSuffix(str, "css"){
+    	 		str = "http://www.youtube.com" + str
+    	 		resp, err := http.Get(str)
+    	 		if err != nil {
+            	panic(err)
+        		}
+
+        		defer resp.Body.Close()
+        	
+        		body, err := ioutil.ReadAll(resp.Body)
+    			if err != nil {
+         			panic(err)
+    			}
+   		 		w.Header().Set("content-type", "text/css")
+            	w.Write([]byte(body))
+
+            }
+
+            if strings.HasSuffix(str, "gif"){
+    	 		str = "http://www.youtube.com" + str
+    	 		resp, err := http.Get(str)
+    	 		if err != nil {
+            	panic(err)
+        		}
+
+        		defer resp.Body.Close()
+        	
+        		body, err := ioutil.ReadAll(resp.Body)
+    			if err != nil {
+         			panic(err)
+    			}
+   		 		w.Header().Set("content-type", "image/gif")
+            	w.Write([]byte(body))
+
+            }
+
+ 			if strings.HasSuffix(str, "jpg"){
+    	 		str = "http://www.youtube.com" + str
+    	 		resp, err := http.Get(str)
+    	 		if err != nil {
+            	panic(err)
+        		}
+
+        		defer resp.Body.Close()
+        	
+        		body, err := ioutil.ReadAll(resp.Body)
+    			if err != nil {
+         			panic(err)
+    			}
+   		 		w.Header().Set("content-type", "image/jpg")
+            	w.Write([]byte(body))
+
+            	}else {
 
 				fmt.Fprintf(w, "METHOD:"+r.Method+"\r\n")
 				fmt.Fprintf(w, "URL:\r\n")
