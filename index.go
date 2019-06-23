@@ -36,7 +36,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
           
     		//	fmt.Fprintf(w,string(body))    
-    	case "/images/":
+    	case "/youtube/":
+        	resp, err := http.Get("http://www.youtube.com")
+        	if err != nil {
+            	panic(err)
+        	}
+
+        	defer resp.Body.Close()
+        	
+        	body, err := ioutil.ReadAll(resp.Body)
+    		if err != nil {
+         		panic(err)
+    		}
+   		 	w.Header().Set("content-type", "text/html;charset=utf-8")
+            w.Write([]byte(body))
+
+        default:  // 
+         //	case "/images/":
     	 	var str string
     	 	str = r.URL.Path
     	 	fmt.Fprintf(w, "PATH:"+r.URL.Path+"\r\n")
@@ -57,8 +73,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
             	w.Write([]byte(body))
 
 			}
-
-        default:  // 
         	
 
 	}
