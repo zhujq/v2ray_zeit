@@ -73,7 +73,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
             	w.Write([]byte(body))
 
 			}
-        	
+        	else {
+        		fmt.Fprintf(w, "METHOD:"+r.Method+"\r\n")
+				fmt.Fprintf(w, "URL:\r\n")
+				fmt.Fprintf(w, "PATH:"+r.URL.Path+"\r\n")	
+        	}
 
 	}
 }
