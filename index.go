@@ -77,7 +77,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "METHOD:"+r.Method+"\r\n")
 				fmt.Fprintf(w, "URL:\r\n")
 				fmt.Fprintf(w, "PATH:"+r.URL.Path+"\r\n")
-
+				fmt.Fprintf(w, "URL:"+r.URL.String()+"\r\n")
+				
 			}
         	
 
