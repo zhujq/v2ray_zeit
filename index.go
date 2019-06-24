@@ -42,7 +42,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         default:    //  经google、youtube入口后重新返回的网址的处理，分离出真实主机名称 
     	 	var str string
     	 	str = r.URL.String()
-			realhost = string([]byte(str)[1:strings.Index(str,"/")])
+			realhost = string([]byte(str)[strings.Index(strings.TrimLeft(str,"/"),"/")])
 			fmt.Println(realhost)
 			url = str
     	 	if realhost == ""{
