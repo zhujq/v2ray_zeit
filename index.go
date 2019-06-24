@@ -85,6 +85,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println("start to match")
 		tempstr := string(body)
+		fmtPrintln(len(tempstr))
 		olds := "<a href=\"/"
 		news := "<a href=\"https://v2ray.14065567.now.sh/" + realhost + "/"
 		tempstr = strings.ReplaceAll(string(body),olds,news)
