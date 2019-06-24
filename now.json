@@ -8,6 +8,7 @@
   	{ "src": "/youtube/", "dest": "index.go" },
   	{ "src": "/search*", "dest": "index.go" },
   	{ "src": "/url*", "dest": "index.go" },
+  	{ "src": "/watch_videos*", "dest": "index.go" },
   	{ "src": "/images/branding/googlelogo/1x/*.*", "dest": "index.go" }
   ]
 }
