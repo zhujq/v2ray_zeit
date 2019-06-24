@@ -83,10 +83,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	if strings.Contains(string(resp.Header.Get("content-type")),"text/html"){  
 
+		fmt.Println("start to match")
+		tempstr := string(body)
 		olds := "<a href=\"/"
 		news := "<a href=" + "\""+ "https://v2ray.14065567.now.sh/" + realhost + "/"
-		tempstr := strings.ReplaceAll(string(body),olds,news)
+		tempstr = strings.ReplaceAll(string(body),olds,news)
 		
+		if len(tempstr) != len(string(body)){
+			fmt.Println("matched")
+		}
 
 		olds = "src=\"/"
 		news = "src=" + "\""+ "https://v2ray.14065567.now.sh/" + realhost+ "/"
