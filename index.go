@@ -80,23 +80,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		body = []byte(strings.ReplaceAll(string(body),olds,news))
 
 		olds = "src=\"/"
-		news = "src=" + "\""+ "v2ray.14065567.now.sh/" + realhost+ "/"
+		news = "src=" + "\""+ "https://v2ray.14065567.now.sh/" + realhost+ "/"
 		body = []byte(strings.ReplaceAll(string(body),olds,news))
 
 		olds = "href=\"http://"
-		news = "href=" + "\""+ "v2ray.14065567.now.sh/" 
+		news = "href=" + "\""+ "https://v2ray.14065567.now.sh/" 
 		body = []byte(strings.ReplaceAll(string(body),olds,news))
 
 		olds = "href=\"https://"
-		news = "href=" + "\""+ "v2ray.14065567.now.sh/" 
+		news = "href=" + "\""+ "https://v2ray.14065567.now.sh/" 
 		body = []byte(strings.ReplaceAll(string(body),olds,news))
 
 		olds = "<meta content=\"https://"
-		news = "<meta content=" + "\""+ "v2ray.14065567.now.sh/" 
+		news = "<meta content=" + "\""+ "https://v2ray.14065567.now.sh/" 
 		body = []byte(strings.ReplaceAll(string(body),olds,news))
 
 		olds = "<meta content=\"/"
-		news = "<meta content=" + "\""+ "v2ray.14065567.now.sh/" + realhost + "/"
+		news = "<meta content=" + "\""+ "https://v2ray.14065567.now.sh/" + realhost + "/"
 		body = []byte(strings.ReplaceAll(string(body),olds,news))
 		
 
