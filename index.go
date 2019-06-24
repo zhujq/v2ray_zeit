@@ -43,6 +43,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     	 	var str string
     	 	str = r.URL.String()
 			realhost = string([]byte(str)[:strings.Index(str,"/")])
+			url = str
     	 	if realhost == ""{
 				fmt.Fprintf(w, "Failed to handle RequestUrl:"+str+"\r\n")
 			}
@@ -72,7 +73,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    		w.Header().Set(k,resp.Header.Get(k))
    	}
 	
-	if strings.Contains(string(resp.Header.Get("content-type")),"text/html"){
+//	if strings.Contains(string(resp.Header.Get("content-type")),"text/html"){  //考虑对所有返回的文本进行链接修正，指回zeit
 
 		olds := "<a href=\"/"
 		news := "<a href=" + "\""+ "v2ray.14065567.now.sh/" + realhost + "/"
@@ -94,8 +95,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		news = "<meta content=" + "\""+ "v2ray.14065567.now.sh/" + "/"
 		body = []byte(strings.ReplaceAll(string(body),olds,news))
 
-	}
-			
+//	}
+	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,resp.Header.Get("content-type"))		
 			
     w.Write([]byte(body))
 
