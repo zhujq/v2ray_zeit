@@ -76,7 +76,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 //	if strings.Contains(string(resp.Header.Get("content-type")),"text/html"){  //考虑对所有返回的文本进行链接修正，指回zeit
 
 		olds := "<a href=\"/"
-		news := "<a href=" + "\""+ "v2ray.14065567.now.sh/" + realhost + "/"
+		news := "<a href=" + "\""+ "https://v2ray.14065567.now.sh/" + realhost + "/"
 		body = []byte(strings.ReplaceAll(string(body),olds,news))
 
 		olds = "src=\"/"
