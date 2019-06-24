@@ -88,7 +88,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(len(tempstr))
 		olds := "<a href=\"/"
 		news := "<a href=\"https://v2ray.14065567.now.sh/" + realhost + "/"
-		tempstr = strings.ReplaceAll(string(body),olds,news)
+		tempstr = strings.ReplaceAll(tempstr,olds,news)
 		
 		if len(tempstr) != len(string(body)){
 			fmt.Println("matched")
@@ -115,6 +115,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		tempstr =  strings.ReplaceAll(tempstr,olds,news)
 		
 		body = []byte(tempstr)
+		fmt.Println(len(body))
 	}
 	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,resp.Header.Get("content-type"))		
 			
