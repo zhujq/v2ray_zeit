@@ -47,7 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     	 	var str string
 			str = r.URL.String()
 			str = strings.TrimLeft(str,"/")
-			realhost = string([]byte(str)[0,strings.Index(str,"/")])  //去掉首位的/后截取host
+			realhost = string([]byte(str)[0:strings.Index(str,"/")])  //去掉首位的/后截取host
 			fmt.Println(realhost)
 		
     	 	if realhost == ""{
