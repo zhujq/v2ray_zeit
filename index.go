@@ -88,7 +88,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(len(tempstr))
 		olds := "<a href=\"/"
 		news := "<a href=\"https://v2ray.14065567.now.sh/" + realhost + "/"
-		tempstr = strings.ReplaceAll(tempstr,olds,news)
+		tempstr = strings.Replace(tempstr,olds,news,-1)
 		
 		if len(tempstr) != len(string(body)){
 			fmt.Println("matched")
@@ -96,23 +96,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		olds = "src=\"/"
 		news = "src=\"https://v2ray.14065567.now.sh/" + realhost+ "/"
-		tempstr =  strings.ReplaceAll(tempstr,olds,news)
+		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
 		olds = "href=\"http://"
 		news = "href=\"https://v2ray.14065567.now.sh/" 
-		tempstr =  strings.ReplaceAll(tempstr,olds,news)
+		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
 		olds = "href=\"https://"
 		news = "href=\"https://v2ray.14065567.now.sh/" 
-		tempstr =  strings.ReplaceAll(tempstr,olds,news)
+		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
 		olds = "<meta content=\"https://"
 		news = "<meta content=\"https://v2ray.14065567.now.sh/" 
-		tempstr =  strings.ReplaceAll(tempstr,olds,news)
+		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
 		olds = "<meta content=\"/"
 		news = "<meta content=\"https://v2ray.14065567.now.sh/" + realhost + "/"
-		tempstr =  strings.ReplaceAll(tempstr,olds,news)
+		tempstr =  strings.Replace(tempstr,olds,news,-1)
 		
 		body = []byte(tempstr)
 		fmt.Println(len(body))
