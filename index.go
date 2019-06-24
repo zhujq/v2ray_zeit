@@ -9,9 +9,7 @@ import (
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	var url, realhost string
-	if r.URL.Scheme == ""{
-		r.URL.Scheme = "http"
-	}
+	
 	switch r.URL.Path{
 		case "/":
 			fmt.Fprintf(w, "Welcome you,your info:\r\n")
@@ -26,11 +24,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return
 
 		case "/google/":    //google入口
-			url = "http://www.google.com"
+			url = "https://www.google.com"
 			realhost = "www.google.com"
 			  
     	case "/youtube/":   //youtube入口
-			url = "http://www.youtube.com"
+			url = "https://www.youtube.com"
 			realhost = "www.youtube.com"
 		
 		case "/search":     //google search入口，由于暂时无法带上真实主机名导致
@@ -45,11 +43,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     	 	var str string
     	 	str = r.URL.String()
 			realhost = string([]byte(str)[1:strings.Index(str,"/")])
+			fmt.Println(realhost)
 			url = str
     	 	if realhost == ""{
 				fmt.Fprintf(w, "Failed to handle RequestUrl:"+str+"\r\n")
 			}
         	
+	}
+
+	if r.URL.Scheme == ""{
+		r.URL.Scheme = "http"
 	}
 
 	client := &http.Client{}
