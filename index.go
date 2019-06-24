@@ -9,7 +9,9 @@ import (
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	var url, realhost string
-
+	if r.URL.Scheme == ""{
+		r.URL.Scheme = "http"
+	}
 	switch r.URL.Path{
 		case "/":
 			fmt.Fprintf(w, "Welcome you,your info:\r\n")
@@ -42,7 +44,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         default:    //  经google、youtube入口后重新返回的网址的处理，分离出真实主机名称 
     	 	var str string
     	 	str = r.URL.String()
-			realhost = string([]byte(str)[:strings.Index(str,"/")])
+			realhost = string([]byte(str)[1:strings.Index(str,"/")])
 			url = str
     	 	if realhost == ""{
 				fmt.Fprintf(w, "Failed to handle RequestUrl:"+str+"\r\n")
