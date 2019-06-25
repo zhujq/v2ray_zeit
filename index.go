@@ -64,6 +64,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	req, err := http.NewRequest(r.Method, url, nil)
 	req.Header = r.Header
+	req.Header.Del("Accept-Encoding")   //删除请求头压缩选项，否则无法对返回的文本的链接内容进行处理
 	if err != nil {
         panic(err)
     }
