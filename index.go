@@ -36,18 +36,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 		case "/search":     //google search入口，由于暂时无法带上真实主机名导致
             url = "http://www.google.com" + r.URL.String() 
-            realhost = "www.google.com"
-
-		// case "/url":
-        // 		url = "http://www.google.com" + r.URL.String() 
-			    	
+            realhost = "www.google.com"			    	
 
         default:    //  经google、youtube入口后重新返回的网址的处理，分离出真实主机名称 
     	 	var str string
 			str = r.URL.String()
 			str = strings.TrimLeft(str,"/")
 			realhost = string([]byte(str)[0:strings.Index(str,"/")])  //去掉首位的/后截取host
-		//	fmt.Println(realhost)
+		
     	 	if realhost == ""{
 				fmt.Fprintf(w, "Failed to handle RequestUrl:"+str+"\r\n")
 				return
@@ -61,9 +57,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if toredirect(realhost){             //判断如果是国内域名，则指示重定向
 		http.Redirect(w, r, "http://"+ realhost, 307)
+		return
 	}
 	
-
 	client := &http.Client{}
 	req, err := http.NewRequest(r.Method, url, nil)
 	req.Header = r.Header
@@ -89,27 +85,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    	}
 	
 	if strings.Contains(string(resp.Header.Get("content-type")),"text/html"){  
-	//	fmt.Println("start to match")
 		if len(body) == 0 {
 			fmt.Println("resp is empty")
 			return
 		}
-		//fmt.Println(len(body))
-
+		
 		matching := false
 		modifiedrsp := []byte{}
 		tomodifystr := ""
 		for _,v := range body {
 			if string(v) == "<" {
 				matching = true
-			//	fmt.Println("< matched")
 				tomodifystr += string(v)
 			}else if string(v) == ">" {
 				matching = false
-			//	fmt.Println("> matched")
 				tomodifystr += string(v)
 				tomodifystr = modifylink(tomodifystr,realhost)
-			//	fmt.Println(tomodifystr)
 				for _,vv := range tomodifystr {
 					modifiedrsp = append(modifiedrsp,byte(vv))
 				}
@@ -124,8 +115,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		body = modifiedrsp
-		
-		//fmt.Println(len(body))
 	}
 	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,resp.Header.Get("content-type"))		
 			
@@ -283,6 +272,4 @@ func toredirect(s string) bool{
 	}
 	
 	return false
-	
-
 }
