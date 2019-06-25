@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"io/ioutil"
 	"strings"
+	"unicode/utf8"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -86,32 +87,33 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("start to match")
 		tempstr := string(body[:])
 		fmt.Println(len(tempstr))
-		olds := "<a href=\"/"
-		news := "<a href=\"https://v2ray.14065567.now.sh/" + realhost + "/"
+		fmt.Println(utf8.Valid(body))
+		olds := `<a href="/`
+		news := `<a href="https://v2ray.14065567.now.sh/` + realhost + "/"
 		tempstr = strings.Replace(tempstr,olds,news,-1)
 		
 		if len(tempstr) != len(string(body)){
 			fmt.Println("matched")
 		}
 
-		olds = "src=\"/"
-		news = "src=\"https://v2ray.14065567.now.sh/" + realhost+ "/"
+		olds = `src=\"/`
+		news = `src="https://v2ray.14065567.now.sh/` + realhost+ "/"
 		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
-		olds = "href=\"http://"
-		news = "href=\"https://v2ray.14065567.now.sh/" 
+		olds = `href="http://`
+		news = "href="https://v2ray.14065567.now.sh/" 
 		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
-		olds = "href=\"https://"
-		news = "href=\"https://v2ray.14065567.now.sh/" 
+		olds = `href="https://`
+		news = `href="https://v2ray.14065567.now.sh/`
 		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
-		olds = "<meta content=\"https://"
-		news = "<meta content=\"https://v2ray.14065567.now.sh/" 
+		olds = `<meta content="https://`
+		news = `<meta content="https://v2ray.14065567.now.sh/`
 		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
-		olds = "<meta content=\"/"
-		news = "<meta content=\"https://v2ray.14065567.now.sh/" + realhost + "/"
+		olds = `<meta content="/`
+		news = `<meta content="https://v2ray.14065567.now.sh/` + realhost + "/"
 		tempstr =  strings.Replace(tempstr,olds,news,-1)
 		
 		body = []byte(tempstr)
