@@ -36,7 +36,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 		case "/search":     //google search入口，由于暂时无法带上真实主机名导致
             url = "http://www.google.com" + r.URL.String() 
-            realhost = "www.google.com"			    	
+			realhost = "www.google.com"	
+		
+		case "/watch/":   //youtube入口
+			url = "https://www.youtube.com"+ r.URL.String() 
+			realhost = "www.youtube.com"
 
         default:    //  经google、youtube入口后重新返回的网址的处理，分离出真实主机名称 
     	 	var str string
