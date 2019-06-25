@@ -147,87 +147,144 @@ func modifylink(s string,realhost string) string{
 	olds = `href="https://`                                     //先改https，否则会重复改
 	news = `href="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `href="http://`
 	news = `href="https://v2ray.14065567.now.sh/` 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `href="//`                                          // href="//  后是绝大路径
 	news = `href="https://v2ray.14065567.now.sh/` 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `href="/`                                                     // href="/ 后是相对路径
 	news = `href="https://v2ray.14065567.now.sh/` + realhost + "/"
 	tempstr = strings.Replace(tempstr,olds,news,-1)
-
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 	
 	olds = `<a href="https://`                                     //先改https，否则会重复改
 	news = `<a href="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `<a href="http://`                                     
 	news = `<a href="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `<a href="//`                                     
 	news = `<a href="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `<a href="/`
 	news = `<a href="https://v2ray.14065567.now.sh/` + realhost + "/"
 	tempstr = strings.Replace(tempstr,olds,news,-1)
-	
+	if len(tempstr) > len(s){
+		return tempstr
+	}
+
 	olds = `src="https://`
 	news = `src="https://v2ray.14065567.now.sh/` 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `src="http://`
 	news = `src="https://v2ray.14065567.now.sh/` 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `src="//`
 	news = `src="https://v2ray.14065567.now.sh/` 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `src="/`
 	news = `src="https://v2ray.14065567.now.sh/` + realhost+ "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	
 	olds = `srcset="/`
 	news = `srcset="https://v2ray.14065567.now.sh/` + realhost+ "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `<meta content="https://`                             //先改https，否则会重复改
 	news = `<meta content="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `<meta content="http://`
 	news = `<meta content="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `<meta content="/`
 	news = `<meta content="https://v2ray.14065567.now.sh/` + realhost + "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `<iframe src="https://`                           //先改https，否则会重复改
 	news = `<iframe src="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
+	if len(tempstr) > len(s){
+		return tempstr
+	}
+
 	olds = `<iframe src="http://`
 	news = `<iframe src="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `itemtype="https://`                           //先改https，否则会重复改
 	news = `itemtype="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
 
 	olds = `itemtype="http://`
 	news = `itemtype="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	
-	
+	if len(tempstr) > len(s){
+		return tempstr
+	}
+		
 	return tempstr
 
 }
