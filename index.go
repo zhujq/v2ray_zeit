@@ -56,6 +56,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if toredirect(realhost){             //判断如果是国内域名，则指示重定向
+		fmt.Println(r.Method," URL:"+url," LocalRealHost:",realhost,resp.Header.Get("content-type"))	
 		http.Redirect(w, r, "http://"+ realhost, 307)
 		return
 	}
