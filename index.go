@@ -141,6 +141,8 @@ func modifylink(s string,realhost string) string{
 	}
 
 	tempstr := s
+	olds :=""
+	news :=""
 																//先改href= ,再改<a href,否则会重复
 	olds = `href="https://`                                     //先改https，否则会重复改
 	news = `href="https://v2ray.14065567.now.sh/`
@@ -154,8 +156,8 @@ func modifylink(s string,realhost string) string{
 	news = `href="https://v2ray.14065567.now.sh/` 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 
-	olds := `href="/`                                                     // href="/ 后是相对路径
-	news := `href="https://v2ray.14065567.now.sh/` + realhost + "/"
+	olds = `href="/`                                                     // href="/ 后是相对路径
+	news = `href="https://v2ray.14065567.now.sh/` + realhost + "/"
 	tempstr = strings.Replace(tempstr,olds,news,-1)
 
 	
@@ -171,8 +173,8 @@ func modifylink(s string,realhost string) string{
 	news = `<a href="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 
-	olds := `<a href="/`
-	news := `<a href="https://v2ray.14065567.now.sh/` + realhost + "/"
+	olds = `<a href="/`
+	news = `<a href="https://v2ray.14065567.now.sh/` + realhost + "/"
 	tempstr = strings.Replace(tempstr,olds,news,-1)
 	
 	olds = `src="https://`
