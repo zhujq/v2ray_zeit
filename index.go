@@ -101,7 +101,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
 		olds = `href="http://`
-		news = "href="https://v2ray.14065567.now.sh/" 
+		news = `href="https://v2ray.14065567.now.sh/` 
 		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
 		olds = `href="https://`
