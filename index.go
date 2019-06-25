@@ -59,6 +59,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         	
 	}
 
+	if toredirect(realhost){             //判断如果是国内域名，则指示重定向
+		http.Redirect(w, r, "http://"+ realhost, 307)
+	}
 	
 
 	client := &http.Client{}
@@ -126,13 +129,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,resp.Header.Get("content-type"))		
 			
-	w.Write([]byte(body))
-	
-
-
-	
-          
-    //	fmt.Fprintf(w,string(body))  
+	w.Write([]byte(body))        
 }
 
 func modifylink(s string,realhost string) string{
@@ -143,7 +140,7 @@ func modifylink(s string,realhost string) string{
 	tempstr := s
 	olds :=""
 	news :=""
-																//先改href= ,再改<a href,否则会重复
+																
 	olds = `href="https://`                                     //先改https，否则会重复改
 	news = `href="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
@@ -242,7 +239,6 @@ func modifylink(s string,realhost string) string{
 	news = `<meta content="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
-
 	olds = `<meta content="http://`
 	news = `<meta content="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
@@ -255,27 +251,38 @@ func modifylink(s string,realhost string) string{
 	news = `<meta content="https://v2ray.14065567.now.sh/` + realhost + "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 
-
 	olds = `<iframe src="https://`                           //先改https，否则会重复改
 	news = `<iframe src="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
-
 	olds = `<iframe src="http://`
 	news = `<iframe src="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
-
 	olds = `itemtype="https://`                           //先改https，否则会重复改
 	news = `itemtype="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
-
 	olds = `itemtype="http://`
 	news = `itemtype="https://v2ray.14065567.now.sh/`
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-		
+			
 	return tempstr
+
+}
+
+func toredirect(s string) bool{
+	if strings.HasSuffix(s, ".cn"){
+		return true
+	}
+	localurls := []string{"baidu","taobao","sina","163.com","tmall","jd.com","sohu","qq.com","ifeng.com","qunae.com","toutiao.com","alipay.com","ctrip.com","weibo.com"}
+	for _, localurl := range localurls {
+		if strings.Contains(s,localurl){
+			return true
+		}
+	}
+	
+	return false
+	
 
 }
