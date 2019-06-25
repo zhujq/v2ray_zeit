@@ -21,6 +21,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     		fmt.Fprintf(w, "Proto:"+r.Proto+"\r\n")
 			fmt.Fprintf(w, "HOST:"+r.Host+"\r\n")
 			fmt.Fprintf(w, "RequestUrl:"+r.RequestURI+"\r\n")
+			for k,_ := range r.Header {
+			    fmt.Fprintf(w, k+""+r.Header.Get(k)+"\r\n")
+			}
 			return
 
 		case "/google/":    //google入口
