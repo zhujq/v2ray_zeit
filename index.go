@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"io/ioutil"
 	"strings"
-	"unicode/utf8"
+	"bytes"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -85,44 +85,54 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if strings.Contains(string(resp.Header.Get("content-type")),"text/html"){  
 
 		fmt.Println("start to match")
-		tempstr := string(body[:])
-		fmt.Println(len(tempstr))
-		fmt.Println(utf8.Valid(body))
-		olds := `<a href="/`
-		news := `<a href="https://v2ray.14065567.now.sh/` + realhost + "/"
-		tempstr = strings.Replace(tempstr,olds,news,-1)
-		
-		if len(tempstr) != len(string(body)){
-			fmt.Println("matched")
+
+		if len(body) == 0 {
+			fmt.Println("resp is empty")
+			return
 		}
 
-		olds = `src=\"/`
-		news = `src="https://v2ray.14065567.now.sh/` + realhost+ "/"
-		tempstr =  strings.Replace(tempstr,olds,news,-1)
 
-		olds = `href="http://`
-		news = `href="https://v2ray.14065567.now.sh/` 
-		tempstr =  strings.Replace(tempstr,olds,news,-1)
-
-		olds = `href="https://`
-		news = `href="https://v2ray.14065567.now.sh/`
-		tempstr =  strings.Replace(tempstr,olds,news,-1)
-
-		olds = `<meta content="https://`
-		news = `<meta content="https://v2ray.14065567.now.sh/`
-		tempstr =  strings.Replace(tempstr,olds,news,-1)
-
-		olds = `<meta content="/`
-		news = `<meta content="https://v2ray.14065567.now.sh/` + realhost + "/"
-		tempstr =  strings.Replace(tempstr,olds,news,-1)
+		fmt.Println(len(body))
+	
+		olds := []byte(`<a href="/`)
+		news := []byte(`<a href="https://v2ray.14065567.now.sh/` + realhost + "/")
+		body = bytes.Replace(body,olds,news,-1)
 		
-		body = []byte(tempstr)
+	//	if len(tempstr) != len(string(body)){
+	//		fmt.Println("matched")
+	//	}
+
+		olds = []byte(`src=\"/`)
+		news = []byte(`src="https://v2ray.14065567.now.sh/` + realhost+ "/")
+		body = bytes.Replace(body,olds,news,-1)
+
+		olds = []byte(`href="http://`)
+		news = []byte(`href="https://v2ray.14065567.now.sh/`)
+		body = bytes.Replace(body,olds,news,-1)
+
+		olds = []byte(`href="https://`)
+		news = []byte(`href="https://v2ray.14065567.now.sh/`)
+		body = bytes.Replace(body,olds,news,-1)
+
+		olds = []byte(`<meta content="https://`)
+		news = []byte(`<meta content="https://v2ray.14065567.now.sh/`)
+		body = bytes.Replace(body,olds,news,-1)
+
+		olds = []byte(`<meta content="/`)
+		news = []byte(`<meta content="https://v2ray.14065567.now.sh/` + realhost + "/")
+		body = bytes.Replace(body,olds,news,-1)
+		
+		
 		fmt.Println(len(body))
 	}
 	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,resp.Header.Get("content-type"))		
 			
-    w.Write([]byte(body))
+	w.Write([]byte(body))
+	
 
+
+	
           
     //	fmt.Fprintf(w,string(body))  
 }
+
