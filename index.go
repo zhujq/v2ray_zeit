@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"io/ioutil"
 	"strings"
-	"bytes"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -90,37 +89,62 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("resp is empty")
 			return
 		}
-
-
 		fmt.Println(len(body))
+
+		matching := false
+		modifiedrsp := []byte{}
+		tomodifystr := ""
+		for _,v := range body {
+			if string(v) == "<" {
+				matching = true
+				tomodifystr += string(v)
+			}else if string(v) == ">" {
+				matching = false
+				tomodifystr += string(v)
+				tomodifystr = modifylink(tomodifystr,realhost)
+				for _,vv := range tomodifystr {
+					modifiedrsp = append(modifiedrsp,byte(vv))
+				}
+				tomodifystr = ""
+			}else{
+				if matching == false {
+					modifiedrsp = append(modifiedrsp,byte(v))
+				}else{
+					tomodifystr += string(v)
+				}
+			}
+		}
+
+		body = modifiedrsp
+
 	
-		olds := []byte(`<a href="/`)
-		news := []byte(`<a href="https://v2ray.14065567.now.sh/` + realhost + "/")
-		body = bytes.Replace(body,olds,news,-1)
+	//	olds := []byte(`<a href="/`)
+	//	news := []byte(`<a href="https://v2ray.14065567.now.sh/` + realhost + "/")
+	//	body = bytes.Replace(body,olds,news,-1)
 		
 	//	if len(tempstr) != len(string(body)){
 	//		fmt.Println("matched")
 	//	}
 
-		olds = []byte(`src=\"/`)
-		news = []byte(`src="https://v2ray.14065567.now.sh/` + realhost+ "/")
-		body = bytes.Replace(body,olds,news,-1)
+	//	olds = []byte(`src=\"/`)
+	//	news = []byte(`src="https://v2ray.14065567.now.sh/` + realhost+ "/")
+	//	body = bytes.Replace(body,olds,news,-1)
 
-		olds = []byte(`href="http://`)
-		news = []byte(`href="https://v2ray.14065567.now.sh/`)
-		body = bytes.Replace(body,olds,news,-1)
+	//	olds = []byte(`href="http://`)
+	//	news = []byte(`href="https://v2ray.14065567.now.sh/`)
+	//	body = bytes.Replace(body,olds,news,-1)
 
-		olds = []byte(`href="https://`)
-		news = []byte(`href="https://v2ray.14065567.now.sh/`)
-		body = bytes.Replace(body,olds,news,-1)
+	//	olds = []byte(`href="https://`)
+	//	news = []byte(`href="https://v2ray.14065567.now.sh/`)
+	//	body = bytes.Replace(body,olds,news,-1)
 
-		olds = []byte(`<meta content="https://`)
-		news = []byte(`<meta content="https://v2ray.14065567.now.sh/`)
-		body = bytes.Replace(body,olds,news,-1)
+	//	olds = []byte(`<meta content="https://`)
+	//	news = []byte(`<meta content="https://v2ray.14065567.now.sh/`)
+	//	body = bytes.Replace(body,olds,news,-1)
 
-		olds = []byte(`<meta content="/`)
-		news = []byte(`<meta content="https://v2ray.14065567.now.sh/` + realhost + "/")
-		body = bytes.Replace(body,olds,news,-1)
+	//	olds = []byte(`<meta content="/`)
+	//	news = []byte(`<meta content="https://v2ray.14065567.now.sh/` + realhost + "/")
+	//	body = bytes.Replace(body,olds,news,-1)
 		
 		
 		fmt.Println(len(body))
@@ -136,3 +160,38 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     //	fmt.Fprintf(w,string(body))  
 }
 
+func modifylink(s string,realhost string) string{
+	if s == ""{
+		return s
+	}
+
+	tempstr := s
+	
+	olds := `<a href="/`
+	news := `<a href="https://v2ray.14065567.now.sh/` + realhost + "/"
+	tempstr = strings.Replace(tempstr,olds,news,-1)
+	
+
+	olds = `src=\"/`
+	news = `src="https://v2ray.14065567.now.sh/` + realhost+ "/"
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+
+	olds = `href="http://`
+	news = `href="https://v2ray.14065567.now.sh/` 
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+
+	olds = `href="https://`
+	news = `href="https://v2ray.14065567.now.sh/`
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+
+	olds = `<meta content="https://`
+	news = `<meta content="https://v2ray.14065567.now.sh/`
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+
+	olds = `<meta content="/`
+	news = `<meta content="https://v2ray.14065567.now.sh/` + realhost + "/"
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	
+	return tempstr
+
+}
