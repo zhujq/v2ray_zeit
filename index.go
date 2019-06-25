@@ -93,7 +93,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("resp is empty")
 			return
 		}
-		fmt.Println(len(body))
+		//fmt.Println(len(body))
 
 		matching := false
 		modifiedrsp := []byte{}
@@ -101,14 +101,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for _,v := range body {
 			if string(v) == "<" {
 				matching = true
-				fmt.Println("< matched")
+			//	fmt.Println("< matched")
 				tomodifystr += string(v)
 			}else if string(v) == ">" {
 				matching = false
-				fmt.Println("> matched")
+			//	fmt.Println("> matched")
 				tomodifystr += string(v)
 				tomodifystr = modifylink(tomodifystr,realhost)
-				fmt.Println(tomodifystr)
+			//	fmt.Println(tomodifystr)
 				for _,vv := range tomodifystr {
 					modifiedrsp = append(modifiedrsp,byte(vv))
 				}
@@ -123,38 +123,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		body = modifiedrsp
-
-	
-	//	olds := []byte(`<a href="/`)
-	//	news := []byte(`<a href="https://v2ray.14065567.now.sh/` + realhost + "/")
-	//	body = bytes.Replace(body,olds,news,-1)
 		
-	//	if len(tempstr) != len(string(body)){
-	//		fmt.Println("matched")
-	//	}
-
-	//	olds = []byte(`src=\"/`)
-	//	news = []byte(`src="https://v2ray.14065567.now.sh/` + realhost+ "/")
-	//	body = bytes.Replace(body,olds,news,-1)
-
-	//	olds = []byte(`href="http://`)
-	//	news = []byte(`href="https://v2ray.14065567.now.sh/`)
-	//	body = bytes.Replace(body,olds,news,-1)
-
-	//	olds = []byte(`href="https://`)
-	//	news = []byte(`href="https://v2ray.14065567.now.sh/`)
-	//	body = bytes.Replace(body,olds,news,-1)
-
-	//	olds = []byte(`<meta content="https://`)
-	//	news = []byte(`<meta content="https://v2ray.14065567.now.sh/`)
-	//	body = bytes.Replace(body,olds,news,-1)
-
-	//	olds = []byte(`<meta content="/`)
-	//	news = []byte(`<meta content="https://v2ray.14065567.now.sh/` + realhost + "/")
-	//	body = bytes.Replace(body,olds,news,-1)
-		
-		
-		fmt.Println(len(body))
+		//fmt.Println(len(body))
 	}
 	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,resp.Header.Get("content-type"))		
 			
@@ -179,7 +149,7 @@ func modifylink(s string,realhost string) string{
 	tempstr = strings.Replace(tempstr,olds,news,-1)
 	
 
-	olds = `src=\"/`
+	olds = `src="/`
 	news = `src="https://v2ray.14065567.now.sh/` + realhost+ "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 
