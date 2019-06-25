@@ -97,11 +97,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		for _,v := range body {
 			if string(v) == "<" {
 				matching = true
+				fmt.Println("< matched")
 				tomodifystr += string(v)
 			}else if string(v) == ">" {
 				matching = false
+				fmt.Println("> matched")
 				tomodifystr += string(v)
 				tomodifystr = modifylink(tomodifystr,realhost)
+				fmt.Println(tomodifystr)
 				for _,vv := range tomodifystr {
 					modifiedrsp = append(modifiedrsp,byte(vv))
 				}
