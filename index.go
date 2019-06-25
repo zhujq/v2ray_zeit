@@ -153,6 +153,10 @@ func modifylink(s string,realhost string) string{
 	news = `src="https://v2ray.14065567.now.sh/` + realhost+ "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 
+	olds = `srcset="/`
+	news = `srcset="https://v2ray.14065567.now.sh/` + realhost+ "/"
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+
 	olds = `href="http://`
 	news = `href="https://v2ray.14065567.now.sh/` 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
