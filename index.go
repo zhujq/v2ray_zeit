@@ -78,6 +78,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         panic(err)
     }
 
+	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,"resp length:"+string(resp.ContentLength),resp.Header.Get("content-type"))	//记录访问记录
+
     defer resp.Body.Close()
         	
     body, err := ioutil.ReadAll(resp.Body)
@@ -121,8 +123,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		body = modifiedrsp
 	}
-	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,resp.Header.Get("content-type"))		
-			
+	
 	w.Write([]byte(body))        
 }
 
