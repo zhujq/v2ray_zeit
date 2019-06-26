@@ -80,8 +80,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	client := &http.Client{}
 	req, err := http.NewRequest(r.Method, url, nil)
-	req.Header = r.Header
-//	req.Header.Del("Accept-Encoding")   //删除请求头压缩选项，否则无法对返回的文本的链接内容进行处理,20190625 调用compress/gzip进行压缩和解压缩
+
+	req.Header = r.Header     //删除请求头压缩选项，否则无法对返回的文本的链接内容进行处理,20190625 调用compress/gzip进行压缩和解压缩,且只用gzip
+	if  strings.Contains(string(req.Header.Get("Accept-Encoding")),"gzip"){
+		req.Header.Set("Accept-Encoding","gzip")  
+	}else {
+		req.Header.Del("Accept-Encoding")   
+	}
 	if err != nil {
         panic(err)
     }
