@@ -7,6 +7,7 @@ import (
 	"strings"
 	"strconv"
 	"bytes"
+	"compress/gzip"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -80,34 +81,43 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	req, err := http.NewRequest(r.Method, url, nil)
 	req.Header = r.Header
-	req.Header.Del("Accept-Encoding")   //删除请求头压缩选项，否则无法对返回的文本的链接内容进行处理
+//	req.Header.Del("Accept-Encoding")   //删除请求头压缩选项，否则无法对返回的文本的链接内容进行处理,20190625 调用compress/gzip进行压缩和解压缩
 	if err != nil {
         panic(err)
     }
 
-    resp, err := client.Do(req)
+	resp, err := client.Do(req)
+	
+	fmt.Println(r.Method," URL:"+url,"resp len,status,type,Enc:"+strconv.FormatInt(resp.ContentLength,10),resp.Status,resp.Header.Get("content-type"),resp.Header.Get("Content-Encoding"))	//记录访问记录
+
     if err != nil {
         panic(err)
     }
-
-	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,"resp length:"+strconv.FormatInt(resp.ContentLength,10),resp.Header.Get("content-type"))	//记录访问记录
 
     defer resp.Body.Close()
         	
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        panic(err)
-    }
-   		 //	w.Header().Set("content-type", "text/html;charset=utf-8")
-   	for k, _ := range resp.Header{
+    for k, _ := range resp.Header{
    		w.Header().Set(k,resp.Header.Get(k))
-   	}
+	}
 	
-	if strings.Contains(string(resp.Header.Get("content-type")),"text/html"){  
+	body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+        panic(err)
+	}
+	
+	if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get("content-type")),"text/html"){   //只有当返回200和文本类型时进行链接处理
 		if len(body) == 0 {
 			fmt.Println("resp is empty")
 			return
 		}
+		
+		if resp.Header.Get("Content-Encoding") == "gzip"{
+			body,err = gzipdecode(body)
+			if err != nil {
+				panic(err)
+			}
+		}
+
 		
 		matching := false
 		modifiedrsp := []byte{}
@@ -132,13 +142,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		
 		body = bytes.ReplaceAll(modifiedrsp,[]byte("url(https://"),[]byte("url(https://v2ray.14065567.now.sh/"))
 		body = bytes.ReplaceAll(body,[]byte("url('https://"),[]byte("url('https:://v2ray.14065567.now.sh/"))
 		body = bytes.ReplaceAll(body,[]byte("url(/"),[]byte("url(https://v2ray.14065567.now.sh/"+ realhost + "/"))
 		body = bytes.ReplaceAll(body,[]byte("s='/images"),[]byte("s='https://v2ray.14065567.now.sh/"+ realhost + "/images"))
+		
+		if resp.Header.Get("Content-Encoding") == "gzip" {    //如果resp指示压缩，还需要对解开的处理后的内容重新压缩
+			body,err = gzipencode(body)
+			if err != nil {
+				panic(err)
+			}
+
+		}
+
 	}
-	
+
 	w.Write([]byte(body))        
 }
 
@@ -293,4 +311,33 @@ func toredirect(s string) bool{
 	}
 	
 	return false
+}
+
+func gzipencode(in []byte) ([]byte, error) {
+    var (
+        buffer bytes.Buffer
+        out    []byte
+		err    error
+       	)
+        writer := gzip.NewWriter(&buffer)
+        _, err = writer.Write(in)
+        if err != nil {
+            writer.Close()
+            return out, err
+        }
+        err = writer.Close()
+        if err != nil {
+            return out, err
+        }
+   	     return buffer.Bytes(), nil
+}
+	
+func gzipdecode(in []byte) ([]byte, error) {
+        reader, err := gzip.NewReader(bytes.NewReader(in))
+        if err != nil {
+            var out []byte
+            return out, err
+        }
+        defer reader.Close()
+        return ioutil.ReadAll(reader)
 }
