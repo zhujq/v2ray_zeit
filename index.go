@@ -55,7 +55,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				str = realhost + "/" + str
 			}
 
-			if realhost == "youtubei" {             //youtube的youtubei目录暂时无法带上www.youtube.com
+			if realhost == "youtubei" || realhost == "yts" {             //youtube的youtubei yts目录暂时无法带上www.youtube.com
 				realhost = "www.youtube.com"
 				str = realhost + "/" + str
 			}
