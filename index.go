@@ -40,9 +40,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
             url = "http://www.google.com" + r.URL.String() 
 			realhost = "www.google.com"	
 		
-		case "/xjs":     //google search入口，由于暂时无法带上真实主机名导致
-            url = "http://www.google.com" + r.URL.String() 
-			realhost = "www.google.com"	
 		
 		case "/watch/":   //youtube入口
 			url = "https://www.youtube.com"+ r.URL.String() 
@@ -53,6 +50,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = r.URL.String()
 			str = strings.TrimLeft(str,"/")
 			realhost = string([]byte(str)[0:strings.Index(str,"/")])  //去掉首位的/后截取host
+			if realhost == "xjs" {             //google的xjs目录暂时无法带上www.google.com
+				realhost = "www.google.com"
+			}
 		
     	 	if realhost == ""{
 				fmt.Fprintf(w, "Failed to handle RequestUrl:"+str+"\r\n")
@@ -128,7 +128,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 		
 		body = bytes.ReplaceAll(modifiedrsp,[]byte("url(https://"),[]byte("url(https://v2ray.14065567.now.sh/"))
+		body = bytes.ReplaceAll(body,[]byte("url('https://"),[]byte("url('https:://v2ray.14065567.now.sh/"))
 		body = bytes.ReplaceAll(body,[]byte("url(/"),[]byte("url(https://v2ray.14065567.now.sh/"+ realhost + "/"))
+		body = bytes.ReplaceAll(body,[]byte("s='/images"),[]byte("s='https://v2ray.14065567.now.sh/"+ realhost + "/images"))
 	}
 	
 	w.Write([]byte(body))        
