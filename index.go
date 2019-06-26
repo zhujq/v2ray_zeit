@@ -54,6 +54,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				realhost = "www.google.com"
 				str = realhost + "/" + str
 			}
+
+			if realhost == "youtubei" {             //youtube的youtubei目录暂时无法带上www.youtube.com
+				realhost = "www.youtube.com"
+				str = realhost + "/" + str
+			}
 		
     	 	if realhost == ""{
 				fmt.Fprintf(w, "Failed to handle RequestUrl:"+str+"\r\n")
