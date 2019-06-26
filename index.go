@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"io/ioutil"
 	"strings"
+	"strconv"
+	"bytes"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -35,6 +37,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			realhost = "www.youtube.com"
 		
 		case "/search":     //google search入口，由于暂时无法带上真实主机名导致
+            url = "http://www.google.com" + r.URL.String() 
+			realhost = "www.google.com"	
+		
+		case "/xjs":     //google search入口，由于暂时无法带上真实主机名导致
             url = "http://www.google.com" + r.URL.String() 
 			realhost = "www.google.com"	
 		
@@ -78,7 +84,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         panic(err)
     }
 
-	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,"resp length:"+string(resp.ContentLength),resp.Header.Get("content-type"))	//记录访问记录
+	fmt.Println(r.Method," URL:"+url," RealHost:",realhost,"resp length:"+strconv.FormatInt(resp.ContentLength,10),resp.Header.Get("content-type"))	//记录访问记录
 
     defer resp.Body.Close()
         	
@@ -120,8 +126,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-
-		body = modifiedrsp
+		
+		body = bytes.ReplaceAll(modifiedrsp,[]byte("url(https://"),[]byte("url(https://v2ray.14065567.now.sh/"))
+		body = bytes.ReplaceAll(body,[]byte("url(/"),[]byte("url(https://v2ray.14065567.now.sh/"+ realhost + "/"))
 	}
 	
 	w.Write([]byte(body))        
