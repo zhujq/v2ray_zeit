@@ -11,7 +11,7 @@ import (
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	var url, realhost string
+	url, realhost := ""
 
 	switch r.URL.Path{
 		case "/":
@@ -308,7 +308,7 @@ func toredirect(s string) bool{
 	if strings.HasSuffix(s, ".cn"){
 		return true
 	}
-	localurls := []string{"baidu","taobao","sina","163.com","tmall","jd.com","sohu","qq.com","ifeng.com","qunae.com","toutiao.com","alipay.com","ctrip.com","weibo.com"}
+	localurls := []string{"baidu","taobao","sina","163.com","tmall","jd.com","sohu","qq.com","ifeng.com","qunae.com","toutiao.com","alipay.com","ctrip.com","weibo.com","zhihu"}
 	for _, localurl := range localurls {
 		if strings.Contains(s,localurl){
 			return true
