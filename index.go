@@ -52,6 +52,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			realhost = string([]byte(str)[0:strings.Index(str,"/")])  //去掉首位的/后截取host
 			if realhost == "xjs" {             //google的xjs目录暂时无法带上www.google.com
 				realhost = "www.google.com"
+				str = realhost + "/" + str
 			}
 		
     	 	if realhost == ""{
