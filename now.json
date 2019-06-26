@@ -8,7 +8,7 @@
   	{ "src": "/youtube/", "dest": "index.go" },
   	{ "src": "/search*", "dest": "index.go" },
   	{ "src": "/url*", "dest": "index.go" },
-  	{ "src": "/watch/*", "dest": "index.go" },
+  	{ "src": "/watch*", "dest": "index.go" },
   	{ "src": "/*.*", "dest": "index.go" }
   ]
 }

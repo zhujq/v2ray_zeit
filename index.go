@@ -41,7 +41,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			realhost = "www.google.com"	
 		
 		
-		case "/watch/":   //youtube入口
+		case "/watch":   //youtube入口
 			url = "https://www.youtube.com"+ r.URL.String() 
 			realhost = "www.youtube.com"
 
