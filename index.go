@@ -9,9 +9,13 @@ import (
 	"bytes"
 	"compress/gzip"
 )
+const zhost string = "https://v2ray.14065567.now.sh/"
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	url, realhost := ""
+	var (
+		url =""
+		realhost =""
+	)
 
 	switch r.URL.Path{
 		case "/":
@@ -147,10 +151,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		body = bytes.ReplaceAll(modifiedrsp,[]byte("url(https://"),[]byte("url(https://v2ray.14065567.now.sh/"))
-		body = bytes.ReplaceAll(body,[]byte("url('https://"),[]byte("url('https:://v2ray.14065567.now.sh/"))
-		body = bytes.ReplaceAll(body,[]byte("url(/"),[]byte("url(https://v2ray.14065567.now.sh/"+ realhost + "/"))
-		body = bytes.ReplaceAll(body,[]byte("s='/images"),[]byte("s='https://v2ray.14065567.now.sh/"+ realhost + "/images"))
+		body = bytes.ReplaceAll(modifiedrsp,[]byte("url(https://"),[]byte("url(" + zhost ))
+		body = bytes.ReplaceAll(body,[]byte("url('https://"),[]byte("url('" +zhost ))
+		body = bytes.ReplaceAll(body,[]byte("url(/"),[]byte("url(" +zhost + realhost + "/"))
+		body = bytes.ReplaceAll(body,[]byte("s='/images"),[]byte("s='" +zhost + realhost + "/images"))
 		
 		if resp.Header.Get("Content-Encoding") == "gzip" {    //如果resp指示压缩，还需要对解开的处理后的内容重新压缩
 			body,err = gzipencode(body)
@@ -175,129 +179,129 @@ func modifylink(s string,realhost string) string{
 	news :=""
 																
 	olds = `href="https://`                                     //先改https，否则会重复改
-	news = `href="https://v2ray.14065567.now.sh/`
+	news = `href=` + zhost
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
 		return tempstr
 	}
 
 	olds = `href="http://`
-	news = `href="https://v2ray.14065567.now.sh/` 
+	news = `href=` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
 		return tempstr
 	}
 
 	olds = `href="//`                                          // href="//  后是绝大路径
-	news = `href="https://v2ray.14065567.now.sh/` 
+	news = `href="` +zhost  
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
 		return tempstr
 	}
 
 	olds = `href="/`                                                     // href="/ 后是相对路径
-	news = `href="https://v2ray.14065567.now.sh/` + realhost + "/"
+	news = `href="` + zhost + realhost + "/"
 	tempstr = strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
 		return tempstr
 	}
 	
 	olds = `<a href="https://`                                     //先改https，否则会重复改
-	news = `<a href="https://v2ray.14065567.now.sh/`
+	news = `<a href="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
 		return tempstr
 	}
 
 	olds = `<a href="http://`                                     
-	news = `<a href="https://v2ray.14065567.now.sh/`
+	news = `<a href="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
 		return tempstr
 	}
 
 	olds = `<a href="//`                                     
-	news = `<a href="https://v2ray.14065567.now.sh/`
+	news = `<a href="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
 		return tempstr
 	}
 
 	olds = `<a href="/`
-	news = `<a href="https://v2ray.14065567.now.sh/` + realhost + "/"
+	news = `<a href="` + zhost + realhost + "/"
 	tempstr = strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
 		return tempstr
 	}
 
 	olds = `src="https://`
-	news = `src="https://v2ray.14065567.now.sh/` 
+	news = `src="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 
 	olds = `src="http://`
-	news = `src="https://v2ray.14065567.now.sh/` 
+	news = `src="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 
 	olds = `src="//`
-	news = `src="https://v2ray.14065567.now.sh/` 
+	news = `src="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 
 	olds = `src="/`
-	news = `src="https://v2ray.14065567.now.sh/` + realhost+ "/"
+	news = `src="` +zhost  + realhost+ "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 	olds = `srcset="https://`
-	news = `srcset="https://v2ray.14065567.now.sh/` 
+	news = `srcset="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 
 	olds = `srcset="http://`
-	news = `srcset="https://v2ray.14065567.now.sh/` 
+	news = `srcset="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 
 	olds = `srcset="//`
-	news = `srcset="https://v2ray.14065567.now.sh/` 
+	news = `srcset="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 	olds = `srcset="/`
-	news = `srcset="https://v2ray.14065567.now.sh/` + realhost+ "/"
+	news = `srcset="` + zhost  + realhost+ "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 
 	olds = `<meta content="https://`                             //先改https，否则会重复改
-	news = `<meta content="https://v2ray.14065567.now.sh/`
+	news = `<meta content="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 	olds = `<meta content="http://`
-	news = `<meta content="https://v2ray.14065567.now.sh/`
+	news = `<meta content="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 
 	olds = `<meta content="//`
-	news = `<meta content="https://v2ray.14065567.now.sh/`
+	news = `<meta content="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 	olds = `<meta content="/`
-	news = `<meta content="https://v2ray.14065567.now.sh/` + realhost + "/"
+	news = `<meta content="` + zhost  + realhost + "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 
 	olds = `<iframe src="https://`                           //先改https，否则会重复改
-	news = `<iframe src="https://v2ray.14065567.now.sh/`
+	news = `<iframe src="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 	olds = `<iframe src="http://`
-	news = `<iframe src="https://v2ray.14065567.now.sh/`
+	news = `<iframe src="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 	olds = `itemtype="https://`                           //先改https，否则会重复改
-	news = `itemtype="https://v2ray.14065567.now.sh/`
+	news = `itemtype="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
 	olds = `itemtype="http://`
-	news = `itemtype="https://v2ray.14065567.now.sh/`
+	news = `itemtype="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 			
 	return tempstr
