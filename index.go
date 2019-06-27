@@ -77,8 +77,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if toredirect(realhost){             //判断如果是国内域名，则指示重定向
-		fmt.Println(r.Method,` URL:`+url,` LocalRealHost:`,realhost)	
-		http.Redirect(w, r, `http://`+ realhost, 307)
+	//	fmt.Println(r.Method,` URL:`+url,` LocalRealHost:`,realhost)	
+		http.Redirect(w, r, url, 307)
 		return
 	}
 	
@@ -155,7 +155,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		body = bytes.ReplaceAll(body,[]byte(`url('https://`),[]byte(`url('` +zhost ))
 		body = bytes.ReplaceAll(body,[]byte(`url(/`),[]byte(`url(` +zhost + realhost + `/`))
 		body = bytes.ReplaceAll(body,[]byte(`s='/images`),[]byte(`s='` +zhost + realhost + `/images`))
-		body = bytes.ReplaceAll(body,[]byte(`https:\/\/`),[]byte(`https:\/\/'` +`v2ray.14065567.now.sh` + `\/`))
+		body = bytes.ReplaceAll(body,[]byte(`https:\/\/`),[]byte(`https:\/\/` +`v2ray.14065567.now.sh` + `\/`))
 		
 		
 		if resp.Header.Get("Content-Encoding") == "gzip" {    //如果resp指示压缩，还需要对解开的处理后的内容重新压缩
