@@ -179,14 +179,14 @@ func modifylink(s string,realhost string) string{
 	news :=``
 																
 	olds = `href="https://`                                     //先改https，否则会重复改
-	news = `href=` + zhost
+	news = `href="` + zhost
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
 		return tempstr
 	}
 
 	olds = `href="http://`
-	news = `href=` + zhost 
+	news = `href="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
 		return tempstr
