@@ -153,6 +153,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 		body = bytes.ReplaceAll(modifiedrsp,[]byte(`url(https://`),[]byte(`url(` + zhost ))
 		body = bytes.ReplaceAll(body,[]byte(`url('https://`),[]byte(`url('` +zhost ))
+		body = bytes.ReplaceAll(body,[]byte(`url(//`),[]byte(`url(` +zhost + realhost + `/`))
 		body = bytes.ReplaceAll(body,[]byte(`url(/`),[]byte(`url(` +zhost + realhost + `/`))
 		body = bytes.ReplaceAll(body,[]byte(`s='/images`),[]byte(`s='` +zhost + realhost + `/images`))
 		body = bytes.ReplaceAll(body,[]byte(`http:\/\/`),[]byte(`https:\/\/` +`v2ray.14065567.now.sh` + `\/`))
@@ -183,6 +184,13 @@ func modifylink(s string,realhost string) string{
 	news :=``
 																
 	olds = `href="https://`                                     //先改https，否则会重复改
+	news = `href="` + zhost
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	if len(tempstr) > len(s){
+		return tempstr
+	}
+
+	olds = `href= "https://`                                 //youtube上发现有href=空格情况
 	news = `href="` + zhost
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	if len(tempstr) > len(s){
