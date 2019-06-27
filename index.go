@@ -9,16 +9,16 @@ import (
 	"bytes"
 	"compress/gzip"
 )
-const zhost string = "https://v2ray.14065567.now.sh/"
+const zhost string = `https://v2ray.14065567.now.sh/`
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	var (
-		url =""
-		realhost =""
+		url =``
+		realhost =``
 	)
 
 	switch r.URL.Path{
-		case "/":
+		case `/`:
 			fmt.Fprintf(w, "Welcome you,your info:\r\n")
 			fmt.Fprintf(w, "METHOD:"+r.Method+"\r\n")
 			fmt.Fprintf(w, "URL:\r\n")
@@ -33,52 +33,52 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 
-		case "/google/":    //google入口
-			url = "https://www.google.com"
-			realhost = "www.google.com"
+		case `/google/`:    //google入口
+			url = `https://www.google.com`
+			realhost = `www.google.com`
 			  
-    	case "/youtube/":   //youtube入口
-			url = "https://www.youtube.com"
-			realhost = "www.youtube.com"
+    	case `/youtube/`:   //youtube入口
+			url = `https://www.youtube.com`
+			realhost = `www.youtube.com`
 		
-		case "/search":     //google search入口，由于暂时无法带上真实主机名导致
-            url = "http://www.google.com" + r.URL.String() 
-			realhost = "www.google.com"	
+		case `/search`:     //google search入口，由于暂时无法带上真实主机名导致
+            url = `http://www.google.com` + r.URL.String() 
+			realhost = `www.google.com`	
 		
 		
-		case "/watch":   //youtube入口
-			url = "https://www.youtube.com"+ r.URL.String() 
-			realhost = "www.youtube.com"
+		case `/watch`:   //youtube入口
+			url = `https://www.youtube.com`+ r.URL.String() 
+			realhost = `www.youtube.com`
 
         default:    //  经google、youtube入口后重新返回的网址的处理，分离出真实主机名称 
     	 	var str string
 			str = r.URL.String()
-			str = strings.TrimLeft(str,"/")
-			realhost = string([]byte(str)[0:strings.Index(str,"/")])  //去掉首位的/后截取host
-			if realhost == "xjs" {             //google的xjs目录暂时无法带上www.google.com
-				realhost = "www.google.com"
-				str = realhost + "/" + str
+			str = strings.TrimLeft(str,`/`)
+			realhost = string([]byte(str)[0:strings.Index(str,`/`)])  //去掉首位的/后截取host
+			if realhost == `xjs` {             //google的xjs目录暂时无法带上www.google.com
+				realhost = `www.google.com`
+				str = realhost + `/` + str
 			}
 
-			if realhost == "youtubei" || realhost == "yts" {             //youtube的youtubei yts目录暂时无法带上www.youtube.com
-				realhost = "www.youtube.com"
-				str = realhost + "/" + str
+			if realhost == `youtubei` || realhost == `yts` {             //youtube的youtubei yts目录暂时无法带上www.youtube.com
+				realhost = `www.youtube.com`
+				str = realhost + `/` + str
 			}
 		
-    	 	if realhost == ""{
-				fmt.Fprintf(w, "Failed to handle RequestUrl:"+str+"\r\n")
+    	 	if realhost == ``{
+				fmt.Fprintf(w, `Failed to handle RequestUrl:`+str+`\r\n`)
 				return
 			}
-			if r.URL.Scheme == ""{
-				r.URL.Scheme = "http"
+			if r.URL.Scheme == ``{
+				r.URL.Scheme = `http`
 			}
-			url = r.URL.Scheme + "://" + str
+			url = r.URL.Scheme + `://` + str
         	
 	}
 
 	if toredirect(realhost){             //判断如果是国内域名，则指示重定向
-		fmt.Println(r.Method," URL:"+url," LocalRealHost:",realhost)	
-		http.Redirect(w, r, "http://"+ realhost, 307)
+		fmt.Println(r.Method,` URL:`+url,` LocalRealHost:`,realhost)	
+		http.Redirect(w, r, `http://`+ realhost, 307)
 		return
 	}
 	
@@ -86,10 +86,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	req, err := http.NewRequest(r.Method, url, nil)
 
 	req.Header = r.Header     //删除请求头压缩选项，否则无法对返回的文本的链接内容进行处理,20190625 调用compress/gzip进行压缩和解压缩,且只用gzip
-	if  strings.Contains(string(req.Header.Get("Accept-Encoding")),"gzip"){
-		req.Header.Set("Accept-Encoding","gzip")  
+	if  strings.Contains(string(req.Header.Get(`Accept-Encoding`)),`gzip`){
+		req.Header.Set(`Accept-Encoding`,`gzip`)  
 	}else {
-		req.Header.Del("Accept-Encoding")   
+		req.Header.Del(`Accept-Encoding`)   
 	}
 	if err != nil {
         panic(err)
@@ -97,7 +97,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := client.Do(req)
 	
-	fmt.Println(r.Method," URL:"+url,"resp len,status,type,Enc:"+strconv.FormatInt(resp.ContentLength,10),resp.Status,resp.Header.Get("content-type"),resp.Header.Get("Content-Encoding"))	//记录访问记录
+	fmt.Println(r.Method,` URL:`+url,`resp len,status,type,Enc:`,strconv.FormatInt(resp.ContentLength,10),resp.Status,resp.Header.Get(`content-type`),resp.Header.Get(`Content-Encoding`))	//记录访问记录
 
     if err != nil {
         panic(err)
@@ -114,13 +114,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         panic(err)
 	}
 	
-	if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get("content-type")),"text/html"){   //只有当返回200和文本类型时进行链接处理
+	if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get(`content-type`)),`text/html`){   //只有当返回200和文本类型时进行链接处理
 		if len(body) == 0 {
-			fmt.Println("resp is empty")
+			fmt.Println(`resp is empty`)
 			return
 		}
 		
-		if resp.Header.Get("Content-Encoding") == "gzip"{
+		if resp.Header.Get(`Content-Encoding`) == `gzip`{
 			body,err = gzipdecode(body)
 			if err != nil {
 				panic(err)
@@ -130,19 +130,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 		matching := false
 		modifiedrsp := []byte{}
-		tomodifystr := ""
+		tomodifystr := ``
 		for _,v := range body {
-			if string(v) == "<" {
+			if string(v) == `<` {
 				matching = true
 				tomodifystr += string(v)
-			}else if string(v) == ">" {
+			}else if string(v) == `>` {
 				matching = false
 				tomodifystr += string(v)
 				tomodifystr = modifylink(tomodifystr,realhost)
 				for _,vv := range tomodifystr {
 					modifiedrsp = append(modifiedrsp,byte(vv))
 				}
-				tomodifystr = ""
+				tomodifystr = ``
 			}else{
 				if matching == false {
 					modifiedrsp = append(modifiedrsp,byte(v))
@@ -151,10 +151,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		body = bytes.ReplaceAll(modifiedrsp,[]byte("url(https://"),[]byte("url(" + zhost ))
-		body = bytes.ReplaceAll(body,[]byte("url('https://"),[]byte("url('" +zhost ))
-		body = bytes.ReplaceAll(body,[]byte("url(/"),[]byte("url(" +zhost + realhost + "/"))
-		body = bytes.ReplaceAll(body,[]byte("s='/images"),[]byte("s='" +zhost + realhost + "/images"))
+		body = bytes.ReplaceAll(modifiedrsp,[]byte(`url(https://`),[]byte(`url(` + zhost ))
+		body = bytes.ReplaceAll(body,[]byte(`url('https://`),[]byte(`url('` +zhost ))
+		body = bytes.ReplaceAll(body,[]byte(`url(/`),[]byte(`url(` +zhost + realhost + `/`))
+		body = bytes.ReplaceAll(body,[]byte(`s='/images`),[]byte(`s='` +zhost + realhost + `/images`))
 		
 		if resp.Header.Get("Content-Encoding") == "gzip" {    //如果resp指示压缩，还需要对解开的处理后的内容重新压缩
 			body,err = gzipencode(body)
@@ -175,8 +175,8 @@ func modifylink(s string,realhost string) string{
 	}
 
 	tempstr := s
-	olds :=""
-	news :=""
+	olds :=``
+	news :=``
 																
 	olds = `href="https://`                                     //先改https，否则会重复改
 	news = `href=` + zhost
