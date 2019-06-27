@@ -60,7 +60,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				str = realhost + `/` + str
 			}
 
-			if realhost == `youtubei` || realhost == `yts` {             //youtube的youtubei yts目录暂时无法带上www.youtube.com
+			if realhost == `youtubei` || realhost == `yts` || realhost == `results` {      //youtube的youtubei yts results目录暂时无法带上www.youtube.com
 				realhost = `www.youtube.com`
 				str = realhost + `/` + str
 			}
@@ -155,8 +155,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		body = bytes.ReplaceAll(body,[]byte(`url('https://`),[]byte(`url('` +zhost ))
 		body = bytes.ReplaceAll(body,[]byte(`url(/`),[]byte(`url(` +zhost + realhost + `/`))
 		body = bytes.ReplaceAll(body,[]byte(`s='/images`),[]byte(`s='` +zhost + realhost + `/images`))
+		body = bytes.ReplaceAll(body,[]byte(`http:\/\/`),[]byte(`https:\/\/` +`v2ray.14065567.now.sh` + `\/`))
 		body = bytes.ReplaceAll(body,[]byte(`https:\/\/`),[]byte(`https:\/\/` +`v2ray.14065567.now.sh` + `\/`))
-		
+		body = bytes.ReplaceAll(body,[]byte(`"url":"https://`),[]byte(`"url":"` +zhost ))
+		body = bytes.ReplaceAll(body,[]byte(`"url":"/`),[]byte(`"url":"` +zhost + realhost + `/`))
 		
 		if resp.Header.Get("Content-Encoding") == "gzip" {    //如果resp指示压缩，还需要对解开的处理后的内容重新压缩
 			body,err = gzipencode(body)
@@ -245,12 +247,10 @@ func modifylink(s string,realhost string) string{
 	news = `src="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
-
 	olds = `src="//`
 	news = `src="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
-
 	olds = `src="/`
 	news = `src="` +zhost  + realhost+ "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
@@ -259,12 +259,10 @@ func modifylink(s string,realhost string) string{
 	news = `srcset="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
-
 	olds = `srcset="http://`
 	news = `srcset="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
-
 	olds = `srcset="//`
 	news = `srcset="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
@@ -273,7 +271,6 @@ func modifylink(s string,realhost string) string{
 	news = `srcset="` + zhost  + realhost+ "/"
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
 	
-
 	olds = `<meta content="https://`                             //先改https，否则会重复改
 	news = `<meta content="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
