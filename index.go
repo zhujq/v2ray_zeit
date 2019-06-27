@@ -102,7 +102,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	resp, err := client.Do(req)
 	
 	fmt.Println(r.Method,` URL:`+url,`resp len,status,type,Enc:`,strconv.FormatInt(resp.ContentLength,10),resp.Status,resp.Header.Get(`content-type`),resp.Header.Get(`Content-Encoding`))	//记录访问记录
-
+	s, _ := ioutil.ReadAll(r.Body)
+	fmt.Println(`Request Body:` + s)
     if err != nil {
         panic(err)
     }
