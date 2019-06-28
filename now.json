@@ -9,7 +9,7 @@
   	{ "src": "/search*", "dest": "index.go" },
   	{ "src": "/url*", "dest": "index.go" },
 	{ "src": "/watch*", "dest": "index.go" },
-	{ "src": "/manager/*", "dest": "manager.go"}
+	{ "src": "/manager/*", "dest": "manager.go"},
   	{ "src": "/*.*", "dest": "index.go" }
   ]
 }
