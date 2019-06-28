@@ -155,7 +155,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				reqhead = append(reqhead,k)	
 				reqhead = append(reqhead,r.Header.Get(k))	
 			}
-			var insertsql = `insert into visits(method,url,head)value(r.Method,url,reqhead) `
+			var insertsql = `insert into visits(method,url,head) values(r.Method,url,reqhead) `
 			_,err := db.Exec(insertsql)
 			if err != nil{
 				fmt.Println(err.Error() )	
