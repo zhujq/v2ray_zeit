@@ -55,7 +55,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			defer rows.Close()
 			
 			var (
-				visitid =""
+				visitid = 0
 				visitime =""
 				visitmethod =""
 				visiturl =""
@@ -162,15 +162,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				reqhead += k	
 				reqhead += r.Header.Get(k)
 			}
-			reqhead =  strings.Replace(reqhead,`"`,``,-1)
+			reqhead =  strings.Replace(reqhead,`"`,`\"`,-1)
 			rsphead := ``
 			for k, _ := range resp.Header {
 				rsphead += k	
 				rsphead += resp.Header.Get(k)
 			}
-			rsphead =  strings.Replace(rsphead,`"`,``,-1)
+			rsphead =  strings.Replace(rsphead,`"`,`\"`,-1)
 			var insertsql = `insert into visits(method,url,head,rsp_status,rsp_head,rsp_legnth) values(`+`"` + r.Method +`","` + url +`","`+ reqhead +`","` + resp.Status +`","` + rsphead + `","` + strconv.FormatInt(resp.ContentLength,10)+`");`
-			fmt.Println(insertsql)	
+		//	fmt.Println(insertsql)	
 			_,err := db.Exec(insertsql)
 			if err != nil{
 				fmt.Println(err.Error() )	
@@ -233,6 +233,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
+		//HTML文件脚本中的url修正
 		body = bytes.ReplaceAll(modifiedrsp,[]byte(`url(https://`),[]byte(`url(` + zhost ))
 		body = bytes.ReplaceAll(body,[]byte(`url('https://`),[]byte(`url('` +zhost ))
 		body = bytes.ReplaceAll(body,[]byte(`url(//`),[]byte(`url(` +zhost + realhost + `/`))
