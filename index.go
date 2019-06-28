@@ -60,19 +60,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				visitmethod =""
 				visiturl =""
 				visithead =""
-				visitbody =""
-				visitform =""
-				visitpostform =""
-				visitmultipartform =""
 				rsp_status =""
 				rsp_head =""
 				rsp_length =""
 			)
 			for rows.Next() {	
-				if err = rows.Scan(&visitid,&visitime,&visitmethod,&visiturl,&visithead,&visitbody,&visitform,&visitpostform,&visitmultipartform,&rsp_status,&rsp_head,&rsp_length); err != nil {
+				if err = rows.Scan(&visitid,&visitime,&visitmethod,&visiturl,&visithead,&rsp_status,&rsp_head,&rsp_length); err != nil {
 					fmt.Println(err.Error() )	
 				}
-				fmt.Fprintf(w,visitid,visitime,visitmethod,visiturl,visithead,visitbody,visitform,visitpostform,visitmultipartform,rsp_status,rsp_head,rsp_length)
+				fmt.Fprintf(w,visitid,visitime,visitmethod,visiturl,visithead,rsp_status,rsp_head,rsp_length,"\r\n")
 			}
 				
 			if err = rows.Err(); err != nil {
@@ -166,7 +162,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				reqhead += k	
 				reqhead += r.Header.Get(k)
 			}
-			var insertsql = `insert into visits(method,url,head) values(`+`"` + r.Method +`",`+ `"` + url +`",`+ `"`+ reqhead + `");`
+			rsphead := ``
+			for k, _ := range resp.Header {
+				rsphead += k	
+				rsphead += resp.Header.Get(k)
+			}
+			var insertsql = `insert into visits(method,url,head,rsp_status,rsp_head,rsp_legnth) values(`+`"` + r.Method +`","` + url +`","`+ reqhead +`","` + resp.Status +`","` + rsphead + `","` + strconv.FormatInt(resp.ContentLength,10)+`");`
 			_,err := db.Exec(insertsql)
 			if err != nil{
 				fmt.Println(err.Error() )	
