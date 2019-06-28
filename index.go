@@ -49,7 +49,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			rows, err := db.Query("SELECT * FROM visits")
 			if err != nil {
-				fmt.Fprintf(w, err.Error() )
+				fmt.Println(err.Error() )	
 				return
 			}
 			defer rows.Close()
@@ -58,13 +58,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for rows.Next() {
 				var name string
 				if err = rows.Scan(&name); err != nil {
-					fmt.Fprintf(w, err.Error() )
+					fmt.Println(err.Error() )	
 				}
 				names = names + name
 			}
 			
 			if err = rows.Err(); err != nil {
-				fmt.Fprintf(w, err.Error() )
+				fmt.Println(err.Error() )	
 			}
 
 			fmt.Fprintf(w, names )
@@ -158,15 +158,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			var insertsql = `insert into visits(method,url,head)value(r.Method,url,reqhead) `
 			_,err := db.Exec(insertsql)
 			if err != nil{
-				fmt.Fprintf(w, err.Error() )	
+				fmt.Println(err.Error() )	
 			}
 
 		}else{
-			fmt.Fprintf(w, err.Error() )	
+			fmt.Println(err.Error() )	
 		}
 		
 	}else{
-		fmt.Fprintf(w, err.Error() )
+		fmt.Println(err.Error() )	
 	}
 	defer db.Close()
 
