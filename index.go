@@ -54,7 +54,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 			defer rows.Close()
 			
-			fmt.Fprintf(w,"%s","<html><head></head><body><talbe width=100% border=1 align=center><tr><th>id</th><th>datetime</th><th>Method</th><th>URL</th><th>Req_Head</th><th>RSP_STATUS</th><th>RSP_HEAD</th><th>RSP_LENGTH</th></tr>")
+			fmt.Fprintf(w,"%s","<html><head></head><body><table width=100% border=1 align=center><tr><th>id</th><th>datetime</th><th>Method</th><th>URL</th><th>Req_Head</th><th>RSP_STATUS</th><th>RSP_HEAD</th><th>RSP_LENGTH</th></tr>")
 			var (
 				visitid = 0
 				visitime =""
@@ -75,7 +75,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if err = rows.Err(); err != nil {
 				fmt.Println(err.Error() )	
 			}
-			fmt.Fprintf(w,"%s","</talbe></body>")
+			fmt.Fprintf(w,"%s","</table></body>")
 			return
 
 		case `/google/`:    //google入口
