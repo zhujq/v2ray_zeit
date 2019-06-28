@@ -47,7 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			rows, err := db.Query("SELECT * FROM table")
+			rows, err := db.Query("SELECT * FROM visits")
 			if err != nil {
 				fmt.Fprintf(w, err.Error() )
 				return
@@ -156,9 +156,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				reqhead = append(reqhead,r.Header.Get(k))	
 			}
 			var insertsql = `insert into visits(method,url,head)value(r.Method,url,reqhead) `
-			db.Exec(insertsql)
+			_,err := db.Exec(insertsql)
+			if err != nil{
+				fmt.Fprintf(w, err.Error() )	
+			}
+
+		}else{
+			fmt.Fprintf(w, err.Error() )	
 		}
 		
+	}else{
+		fmt.Fprintf(w, err.Error() )
 	}
 	defer db.Close()
 
