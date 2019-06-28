@@ -70,7 +70,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			if r.URL.Scheme == ``{
-				r.URL.Scheme = `http`
+				r.URL.Scheme = `https`
 			}
 			url = r.URL.Scheme + `://` + str
         	
