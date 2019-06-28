@@ -54,7 +54,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 			defer rows.Close()
 			
-			fmt.Fprintf(w,"%s","<html><head></head><body><talbe>")
+			fmt.Fprintf(w,"%s","<html><head></head><body><talbe width=100% border=1 align=center><tr><th>id</th><th>datetime</th><th>Method</th><th>URL</th><th>Req_Head</th><th>RSP_STATUS</th><th>RSP_HEAD</th><th>RSP_LENGTH</th></tr>")
 			var (
 				visitid = 0
 				visitime =""
@@ -69,7 +69,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if err = rows.Scan(&visitid,&visitime,&visitmethod,&visiturl,&visithead,&rsp_status,&rsp_head,&rsp_length); err != nil {
 					fmt.Println(err.Error() )	
 				}
-				fmt.Fprintf(w,"<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%d</td></tr>",visitid,visitime,visitmethod,visiturl,visithead,rsp_status,rsp_head,rsp_length)
+				fmt.Fprintf(w,"<tr><td width=5%>%d</td><td width=10%>%s</td><td width=10%>%s</td><td width=20%>%s</td><td width=20%>%s</td><td width=10%>%s</td><td width=20%>%s</td><td width=5%>%d</td></tr>",visitid,visitime,visitmethod,visiturl,visithead,rsp_status,rsp_head,rsp_length)
 			}
 				
 			if err = rows.Err(); err != nil {
