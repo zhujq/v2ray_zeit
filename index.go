@@ -54,6 +54,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 			defer rows.Close()
 			
+			fmt.Fprintf(w,"%s","<html><head></head><body><talbe>")
 			var (
 				visitid = 0
 				visitime =""
@@ -68,13 +69,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				if err = rows.Scan(&visitid,&visitime,&visitmethod,&visiturl,&visithead,&rsp_status,&rsp_head,&rsp_length); err != nil {
 					fmt.Println(err.Error() )	
 				}
-				fmt.Fprintf(w,strconv.Itoa(visitid),visitime,visitmethod,visiturl,visithead,rsp_status,rsp_head,strconv.Itoa(rsp_length),"\r\n")
+				fmt.Fprintf(w,"<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%d</td></tr>",visitid,visitime,visitmethod,visiturl,visithead,rsp_status,rsp_head,rsp_length)
 			}
 				
 			if err = rows.Err(); err != nil {
 				fmt.Println(err.Error() )	
 			}
-
+			fmt.Fprintf(w,"%s","</talbe></body>")
 			return
 
 		case `/google/`:    //google入口
