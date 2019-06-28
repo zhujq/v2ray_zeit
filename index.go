@@ -150,12 +150,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		err = db.Ping()
 		if err == nil {
-			reqhead := make([]string, 0)
+			reqhead := ``
 			for k, _ := range r.Header {
-				reqhead = append(reqhead,k)	
-				reqhead = append(reqhead,r.Header.Get(k))	
+				reqhead += k	
+				reqhead += r.Header.Get(k)
 			}
-			var insertsql = `insert into visits(method,url,head) values(r.Method,url,reqhead) `
+			var insertsql = `insert into visits(method,url,head) values(` + r.Method +`,` + url +`,`+ reqhead + `)`
 			_,err := db.Exec(insertsql)
 			if err != nil{
 				fmt.Println(err.Error() )	
