@@ -168,6 +168,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				rsphead += resp.Header.Get(k)
 			}
 			var insertsql = `insert into visits(method,url,head,rsp_status,rsp_head,rsp_legnth) values(`+`"` + r.Method +`","` + url +`","`+ reqhead +`","` + resp.Status +`","` + rsphead + `","` + strconv.FormatInt(resp.ContentLength,10)+`");`
+			fmt.Println(insertsql)	
 			_,err := db.Exec(insertsql)
 			if err != nil{
 				fmt.Println(err.Error() )	
