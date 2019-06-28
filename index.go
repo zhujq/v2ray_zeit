@@ -47,7 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			rows, err := db.Query("SELECT * FROM visits")
+			rows, err := db.Query("select * from visits where to_days(visitime) = to_days(now()) order by id desc;")
 			if err != nil {
 				fmt.Println(err.Error() )	
 				return
@@ -62,13 +62,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				visithead =""
 				rsp_status =""
 				rsp_head =""
-				rsp_length =""
+				rsp_length = 0
 			)
 			for rows.Next() {	
 				if err = rows.Scan(&visitid,&visitime,&visitmethod,&visiturl,&visithead,&rsp_status,&rsp_head,&rsp_length); err != nil {
 					fmt.Println(err.Error() )	
 				}
-				fmt.Fprintf(w,visitid,visitime,visitmethod,visiturl,visithead,rsp_status,rsp_head,rsp_length,"\r\n")
+				fmt.Fprintf(w,strconv.Itoa(visitid),visitime,visitmethod,visiturl,visithead,rsp_status,rsp_head,strconv.Itoa(rsp_length),"\r\n")
 			}
 				
 			if err = rows.Err(); err != nil {
