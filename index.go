@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"bytes"
 	"compress/gzip"
+	"database/sql"
+    _ "github.com/go-sql-driver/mysql"
 )
 const zhost string = `https://v2ray.14065567.now.sh/`
 
@@ -31,6 +33,41 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			for k,_ := range r.Header {
 			    fmt.Fprintf(w, k+""+r.Header.Get(k)+"\r\n")
 			}
+			return
+		case `/manager/`:
+			db, err := sql.Open("mysql","zhujq:Juju1234@tcp(35.230.121.24:3316)/zeit")
+			if err != nil {
+				fmt.Fprintf(w, err.Error() )
+				return
+			}
+			defer db.Close()
+			err = db.Ping()
+			if err != nil {
+				fmt.Fprintf(w, err.Error() )
+				return
+			}
+
+			rows, err := db.Query("SELECT * FROM table")
+			if err != nil {
+				fmt.Fprintf(w, err.Error() )
+				return
+			}
+			defer rows.Close()
+
+			var names string = ``
+			for rows.Next() {
+				var name string
+				if err = rows.Scan(&name); err != nil {
+					fmt.Fprintf(w, err.Error() )
+				}
+				names = names + name
+			}
+			
+			if err = rows.Err(); err != nil {
+				fmt.Fprintf(w, err.Error() )
+			}
+
+			fmt.Fprintf(w, names )
 			return
 
 		case `/google/`:    //google入口
@@ -108,6 +145,22 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         panic(err)
     }
+
+	db, err := sql.Open("mysql","zhujq:Juju1234@tcp(35.230.121.24:3316)/zeit")
+	if err == nil {
+		err = db.Ping()
+		if err == nil {
+			reqhead := make([]string, 0)
+			for k, _ := range r.Header {
+				reqhead = append(reqhead,k)	
+				reqhead = append(reqhead,r.Header.Get(k))	
+			}
+			var insertsql = `insert into visits(method,url,head)value(r.Method,url,reqhead) `
+			db.Exec(insertsql)
+		}
+		
+	}
+	defer db.Close()
 
     defer resp.Body.Close()
         	
