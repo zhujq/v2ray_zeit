@@ -53,21 +53,32 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			defer rows.Close()
-
-			var names string = ``
-			for rows.Next() {
-				var name string
-				if err = rows.Scan(&name); err != nil {
+			
+			var (
+				visitid =""
+				visitime =""
+				visitmethod =""
+				visiturl =""
+				visithead =""
+				visitbody =""
+				visitform =""
+				visitpostform =""
+				visitmultipartform =""
+				rsp_status =""
+				rsp_head =""
+				rsp_length =""
+			)
+			for rows.Next() {	
+				if err = rows.Scan(&visitid,&visitime,&visitmethod,&visiturl,&visithead,&visitbody,&visitform,&visitpostform,&visitmultipartform,&rsp_status,&rsp_head,&rsp_length); err != nil {
 					fmt.Println(err.Error() )	
 				}
-				names = names + name
+				fmt.Fprintf(w,visitid,visitime,visitmethod,visiturl,visithead,visitbody,visitform,visitpostform,visitmultipartform,rsp_status,rsp_head,rsp_length)
 			}
-			
+				
 			if err = rows.Err(); err != nil {
 				fmt.Println(err.Error() )	
 			}
 
-			fmt.Fprintf(w, names )
 			return
 
 		case `/google/`:    //google入口
