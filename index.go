@@ -54,7 +54,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 			defer rows.Close()
 			
-			fmt.Fprintf(w,`%s`,`<html><head></head><body><table width="100%" border="1" align="center"  font-size:9px color="#660066"><tr><th width="5%">id</th><th width="10%">datetime</th><th idth="10%">Method</th><th width="20%">URL</th><th width="10%">Req_Head</th><th width="10%">RSP_STATUS</th><th width="20%">RSP_HEAD</th><th width="5%%">RSP_LENGTH</th></tr>`)
+			fmt.Fprintf(w,`%s`,`<html><head></head><body><table width="100%" border="1" align="center"  font-size:9px color="#660066" style="word-break:break-all; word-wrap:break-all;"><tr><th width="5%">id</th><th width="10%">datetime</th><th idth="10%">Method</th><th width="20%">URL</th><th width="10%">Req_Head</th><th width="10%">RSP_STATUS</th><th width="20%">RSP_HEAD</th><th width="5%%">RSP_LENGTH</th></tr>`)
 			var (
 				visitid = 0
 				visitime =``
