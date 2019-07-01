@@ -88,12 +88,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			url = zhost + `www.youtube.com/`
 			realhost = `www.youtube.com`
 			http.Redirect(w, r, url, 307)
-			return
-		
-		case `/search`:     //google search入口，由于暂时无法带上真实主机名导致
-            url = `http://www.google.com` + r.URL.String() 
-			realhost = `www.google.com`	
-		
+			return	
 		
 		case `/watch`:   //youtube入口
 			url = `https://www.youtube.com`+ r.URL.String() 
@@ -104,10 +99,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = r.URL.String()
 			str = strings.TrimLeft(str,`/`)
 			realhost = string([]byte(str)[0:strings.Index(str,`/`)])  //去掉首位的/后截取host
-			if realhost == `xjs` {             //google的xjs目录暂时无法带上www.google.com
-				realhost = `www.google.com`
-				str = realhost + `/` + str
-			}
+		//	if realhost == `xjs` {             //google的xjs目录暂时无法带上www.google.com
+		//		realhost = `www.google.com`
+		//		str = realhost + `/` + str
+		//	}
 
 			if realhost == `youtubei` || realhost == `yts` || realhost == `results` {      //youtube的youtubei yts results目录暂时无法带上www.youtube.com
 				realhost = `www.youtube.com`
@@ -167,7 +162,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				reqhead += k
 				reqhead += `:`
 				reqhead += r.Header.Get(k)
-				reqhead += `\r\n`
+				reqhead += `<br>`
 			}
 			reqhead =  strings.Replace(reqhead,`"`,`\"`,-1) //存入mysql时要把“转义
 			rsphead := ``
@@ -175,7 +170,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				rsphead += k
 				rsphead += `:`
 				rsphead += resp.Header.Get(k)
-				rsphead += `\r\n`
+				rsphead += `<br>`
 			}
 			rsphead =  strings.Replace(rsphead,`"`,`\"`,-1)
 			var insertsql = `insert into visits(method,url,head,rsp_status,rsp_head,rsp_legnth) values(`+`"` + r.Method +`","` + url +`","`+ reqhead +`","` + resp.Status +`","` + rsphead + `","` + strconv.FormatInt(resp.ContentLength,10)+`");`
@@ -457,3 +452,5 @@ func gzipdecode(in []byte) ([]byte, error) {
         defer reader.Close()
         return ioutil.ReadAll(reader)
 }
+
+
