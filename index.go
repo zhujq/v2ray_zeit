@@ -79,12 +79,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return
 
 		case `/google/`:    //google入口
-			url = `https://www.google.com`
+			url = zhost + `www.google.com/`
 			realhost = `www.google.com`
+			http.Redirect(w, r, url, 307)
+			return
 			  
     	case `/youtube/`:   //youtube入口
-			url = `https://www.youtube.com`
+			url = zhost + `www.youtube.com/`
 			realhost = `www.youtube.com`
+			http.Redirect(w, r, url, 307)
+			return
 		
 		case `/search`:     //google search入口，由于暂时无法带上真实主机名导致
             url = `http://www.google.com` + r.URL.String() 
@@ -160,14 +164,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		if err == nil {
 			reqhead := ``
 			for k, _ := range r.Header {
-				reqhead += k	
+				reqhead += k
+				reqhead += `:`
 				reqhead += r.Header.Get(k)
+				reqhead += `\r\n`
 			}
-			reqhead =  strings.Replace(reqhead,`"`,`\"`,-1)
+			reqhead =  strings.Replace(reqhead,`"`,`\"`,-1) //存入mysql时要把“转义
 			rsphead := ``
 			for k, _ := range resp.Header {
-				rsphead += k	
+				rsphead += k
+				rsphead += `:`
 				rsphead += resp.Header.Get(k)
+				rsphead += `\r\n`
 			}
 			rsphead =  strings.Replace(rsphead,`"`,`\"`,-1)
 			var insertsql = `insert into visits(method,url,head,rsp_status,rsp_head,rsp_legnth) values(`+`"` + r.Method +`","` + url +`","`+ reqhead +`","` + resp.Status +`","` + rsphead + `","` + strconv.FormatInt(resp.ContentLength,10)+`");`
@@ -211,15 +219,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		
-		matching := false
 		modifiedrsp := []byte{}
 		tomodifystr := ``
 		for _,v := range body {
 			if string(v) == `<` {
-				matching = true
+				if len(tomodifystr) >0 {
+					tomodifystr = modifylink(tomodifystr,realhost)
+					for _,vv := range tomodifystr {
+						modifiedrsp = append(modifiedrsp,byte(vv))
+					}
+					tomodifystr = ``
+				}
 				tomodifystr += string(v)
 			}else if string(v) == `>` {
-				matching = false
 				tomodifystr += string(v)
 				tomodifystr = modifylink(tomodifystr,realhost)
 				for _,vv := range tomodifystr {
@@ -227,23 +239,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 				tomodifystr = ``
 			}else{
-				if matching == false {
-					modifiedrsp = append(modifiedrsp,byte(v))
-				}else{
-					tomodifystr += string(v)
-				}
+				tomodifystr += string(v)
 			}
 		}
-		//HTML文件脚本中的url修正
-		body = bytes.ReplaceAll(modifiedrsp,[]byte(`url(https://`),[]byte(`url(` + zhost ))
-		body = bytes.ReplaceAll(body,[]byte(`url('https://`),[]byte(`url('` +zhost ))
-		body = bytes.ReplaceAll(body,[]byte(`url(//`),[]byte(`url(` +zhost + realhost + `/`))
-		body = bytes.ReplaceAll(body,[]byte(`url(/`),[]byte(`url(` +zhost + realhost + `/`))
-		body = bytes.ReplaceAll(body,[]byte(`s='/images`),[]byte(`s='` +zhost + realhost + `/images`))
-		body = bytes.ReplaceAll(body,[]byte(`http:\/\/`),[]byte(`https:\/\/` +`v2ray.14065567.now.sh` + `\/`))
-		body = bytes.ReplaceAll(body,[]byte(`https:\/\/`),[]byte(`https:\/\/` +`v2ray.14065567.now.sh` + `\/`))
-		body = bytes.ReplaceAll(body,[]byte(`"url":"https://`),[]byte(`"url":"` +zhost ))
-		body = bytes.ReplaceAll(body,[]byte(`"url":"/`),[]byte(`"url":"` +zhost + realhost + `/`))
+
+		body = modifiedrsp
+		
 		
 		if resp.Header.Get("Content-Encoding") == "gzip" {    //如果resp指示压缩，还需要对解开的处理后的内容重新压缩
 			body,err = gzipencode(body)
@@ -270,65 +271,65 @@ func modifylink(s string,realhost string) string{
 	olds = `href="https://`                                     //先改https，否则会重复改
 	news = `href="` + zhost
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	if len(tempstr) > len(s){
-		return tempstr
-	}
+	
 
 	olds = `href= "https://`                                 //youtube上发现有href=空格情况
 	news = `href="` + zhost
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	if len(tempstr) > len(s){
-		return tempstr
-	}
+	
 
 	olds = `href="http://`
 	news = `href="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	if len(tempstr) > len(s){
-		return tempstr
-	}
+	
 
 	olds = `href="//`                                          // href="//  后是绝大路径
 	news = `href="` +zhost  
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	if len(tempstr) > len(s){
-		return tempstr
-	}
+	
 
 	olds = `href="/`                                                     // href="/ 后是相对路径
 	news = `href="` + zhost + realhost + "/"
 	tempstr = strings.Replace(tempstr,olds,news,-1)
-	if len(tempstr) > len(s){
-		return tempstr
-	}
+	
 	
 	olds = `<a href="https://`                                     //先改https，否则会重复改
 	news = `<a href="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	if len(tempstr) > len(s){
-		return tempstr
-	}
+	
 
 	olds = `<a href="http://`                                     
 	news = `<a href="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	if len(tempstr) > len(s){
-		return tempstr
-	}
-
+	
 	olds = `<a href="//`                                     
 	news = `<a href="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	if len(tempstr) > len(s){
-		return tempstr
-	}
-
+	
 	olds = `<a href="/`
 	news = `<a href="` + zhost + realhost + "/"
 	tempstr = strings.Replace(tempstr,olds,news,-1)
-	if len(tempstr) > len(s){
-		return tempstr
-	}
+	
+
+	olds = `action="https://`
+	news = `action="` + zhost
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+
+	olds = `action="http://`
+	news = `action="` + zhost
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+
+	olds = `action="//`
+	news = `action="` + zhost
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+
+	olds = `action="/`
+	news = `action="` + zhost + realhost + "/"
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
+
+	olds = `location='/`
+	news = `location='` + zhost + realhost + "/"
+	tempstr =  strings.Replace(tempstr,olds,news,-1)
 
 	olds = `src="https://`
 	news = `src="` + zhost 
@@ -394,7 +395,22 @@ func modifylink(s string,realhost string) string{
 	olds = `itemtype="http://`
 	news = `itemtype="` + zhost 
 	tempstr =  strings.Replace(tempstr,olds,news,-1)
-			
+
+	//script的url修正
+	tempstr = strings.Replace(tempstr,`url(https://`,`url(` + zhost, -1)
+	tempstr = strings.Replace(tempstr,`url('https://`,`url('` +zhost, -1)
+	tempstr = strings.Replace(tempstr,`url(//`,`url(` +zhost + realhost + `/`, -1)
+	tempstr = strings.Replace(tempstr,`url(/`,`url(` +zhost + realhost + `/`, -1)
+	tempstr = strings.Replace(tempstr,`s='/images`,`s='` +zhost + realhost + `/images`, -1)
+	tempstr = strings.Replace(tempstr,`http:\/\/`,`https:\/\/` +`v2ray.14065567.now.sh` + `\/`,-1)
+	tempstr = strings.Replace(tempstr,`https:\/\/`,`https:\/\/` +`v2ray.14065567.now.sh` + `\/`,-1)
+	tempstr = strings.Replace(tempstr,`"url":"https://`,`"url":"` +zhost ,-1)
+	tempstr = strings.Replace(tempstr,`"url":"/`,`"url":"` +zhost + realhost + `/`, -1)
+	tempstr = strings.Replace(tempstr,`='/`,`='` +zhost + realhost + `/`, -1)
+	
+
+	tempstr = strings.Replace(tempstr,`v2ray.14065567.now.sh/v2ray.14065567.now.sh`,`v2ray.14065567.now.sh`, -1)	 //有可能重复修改	
+	
 	return tempstr
 
 }
