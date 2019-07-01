@@ -135,6 +135,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}else {
 		req.Header.Del(`Accept-Encoding`)   
 	}
+	strreferer := string(req.Header.Get("Referer"))     //修改referer
+	if strings.Contains(strreferer,`v2ray.14065567.now.sh/`){
+		strreferer = strings.Replace(strreferer,`v2ray.14065567.now.sh/`,``,-1)
+		req.Header.Set(`Referer`,strreferer)
+	}
+
 	if err != nil {
         panic(err)
     }
