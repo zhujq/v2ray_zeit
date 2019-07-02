@@ -218,7 +218,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				panic(err)
 			}
 		}
-
 		
 		modifiedrsp := []byte{}
 		tomodifystr := ``
@@ -265,143 +264,52 @@ func modifylink(s string,realhost string) string{
 		return s
 	}
 
-	tempstr := s
-	olds :=``
-	news :=``
-																
-	olds = `href="https://`                                     //先改https，否则会重复改
-	news = `href="` + zhost
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	tempstr := s	                                                     
+	tempstr =  strings.Replace(tempstr,`href="https://`, `href="` + zhost, -1) //先改https，否则会重复改	                                 
+	tempstr =  strings.Replace(tempstr,`href= "https://`,`href="` + zhost,-1) //youtube上发现有href=空格情况
+	tempstr =  strings.Replace(tempstr,`href="http://`,`href="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`href="//`,`href="` +zhost,-1)  // href="//  后是绝对路径
+	tempstr =  strings.Replace(tempstr,`href="/`,`href="` + zhost + realhost + "/",-1)   // href="/ 后是相对路径
+		
+	tempstr =  strings.Replace(tempstr,`<a href="https://`,`<a href="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`<a href="http://`,`<a href="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`<a href="//`,`<a href="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`<a href="/`,`<a href="` + zhost + realhost + "/",-1)
 	
+	tempstr =  strings.Replace(tempstr,`action="https://`,`action="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`action="http://`,`action="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`action="//`,`action="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`action="/`,`action="` + zhost + realhost + "/",-1)
 
-	olds = `href= "https://`                                 //youtube上发现有href=空格情况
-	news = `href="` + zhost
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
+	tempstr =  strings.Replace(tempstr,`location='/`,`location='` + zhost + realhost + "/",-1)
 
-	olds = `href="http://`
-	news = `href="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	tempstr =  strings.Replace(tempstr,`src="https://`,`src="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`src="http://`,`src="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`src="//`,`src="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`src="/`,`src="` +zhost  + realhost+ "/",-1)
+		
+	tempstr =  strings.Replace(tempstr,`srcset="https://`,`srcset="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`srcset="http://`,`srcset="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`srcset="//`,`srcset="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`srcset="/`,`srcset="` + zhost  + realhost+ "/",-1)
 	
+	tempstr =  strings.Replace(tempstr,`<meta content="https://`,`<meta content="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`<meta content="http://`,`<meta content="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`<meta content="//`,`<meta content="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`<meta content="/`,`<meta content="` + zhost  + realhost + "/",-1)
 
-	olds = `href="//`                                          // href="//  后是绝大路径
-	news = `href="` +zhost  
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	tempstr =  strings.Replace(tempstr,`<iframe src="https://`,`<iframe src="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`<iframe src="http://`,`<iframe src="` + zhost,-1)
 	
-
-	olds = `href="/`                                                     // href="/ 后是相对路径
-	news = `href="` + zhost + realhost + "/"
-	tempstr = strings.Replace(tempstr,olds,news,-1)
-	
-	
-	olds = `<a href="https://`                                     //先改https，否则会重复改
-	news = `<a href="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-
-	olds = `<a href="http://`                                     
-	news = `<a href="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `<a href="//`                                     
-	news = `<a href="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `<a href="/`
-	news = `<a href="` + zhost + realhost + "/"
-	tempstr = strings.Replace(tempstr,olds,news,-1)
-	
-
-	olds = `action="https://`
-	news = `action="` + zhost
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-
-	olds = `action="http://`
-	news = `action="` + zhost
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-
-	olds = `action="//`
-	news = `action="` + zhost
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-
-	olds = `action="/`
-	news = `action="` + zhost + realhost + "/"
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-
-	olds = `location='/`
-	news = `location='` + zhost + realhost + "/"
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-
-	olds = `src="https://`
-	news = `src="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-
-	olds = `src="http://`
-	news = `src="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `src="//`
-	news = `src="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `src="/`
-	news = `src="` +zhost  + realhost+ "/"
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `srcset="https://`
-	news = `srcset="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `srcset="http://`
-	news = `srcset="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `srcset="//`
-	news = `srcset="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `srcset="/`
-	news = `srcset="` + zhost  + realhost+ "/"
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `<meta content="https://`                             //先改https，否则会重复改
-	news = `<meta content="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `<meta content="http://`
-	news = `<meta content="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-
-	olds = `<meta content="//`
-	news = `<meta content="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `<meta content="/`
-	news = `<meta content="` + zhost  + realhost + "/"
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-
-	olds = `<iframe src="https://`                           //先改https，否则会重复改
-	news = `<iframe src="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `<iframe src="http://`
-	news = `<iframe src="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `itemtype="https://`                           //先改https，否则会重复改
-	news = `itemtype="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
-	
-	olds = `itemtype="http://`
-	news = `itemtype="` + zhost 
-	tempstr =  strings.Replace(tempstr,olds,news,-1)
+	tempstr =  strings.Replace(tempstr,`itemtype="https://`,`itemtype="` + zhost,-1)
+	tempstr =  strings.Replace(tempstr,`itemtype="http://`,`itemtype="` + zhost,-1)
 
 	//script的url修正
 	tempstr = strings.Replace(tempstr,`url(https://`,`url(` + zhost, -1)
 	tempstr = strings.Replace(tempstr,`url('https://`,`url('` +zhost, -1)
 	tempstr = strings.Replace(tempstr,`url(//`,`url(` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`url(/`,`url(` +zhost + realhost + `/`, -1)
+	tempstr = strings.Replace(tempstr,`url=https://`,`url=` +zhost,-1)
 	tempstr = strings.Replace(tempstr,`s='/images`,`s='` +zhost + realhost + `/images`, -1)
 	tempstr = strings.Replace(tempstr,`http:\/\/`,`https:\/\/` +`v2ray.14065567.now.sh` + `\/`,-1)
 	tempstr = strings.Replace(tempstr,`https:\/\/`,`https:\/\/` +`v2ray.14065567.now.sh` + `\/`,-1)
@@ -409,7 +317,6 @@ func modifylink(s string,realhost string) string{
 	tempstr = strings.Replace(tempstr,`"url":"/`,`"url":"` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`='/`,`='` +zhost + realhost + `/`, -1)
 	
-
 	tempstr = strings.Replace(tempstr,`v2ray.14065567.now.sh/v2ray.14065567.now.sh`,`v2ray.14065567.now.sh`, -1)	 //有可能重复修改	
 	
 	return tempstr
@@ -420,7 +327,7 @@ func toredirect(s string) bool{
 	if strings.HasSuffix(s, ".cn"){
 		return true
 	}
-	localurls := []string{"baidu","taobao","sina","163.com","tmall","jd.com","sohu","qq.com","ifeng.com","qunae.com","toutiao.com","alipay.com","ctrip.com","weibo.com","zhihu"}
+	localurls := []string{"baidu","taobao","sina","163.com","tmall","jd.com","sohu","qq.com","ifeng.com","qunae.com","toutiao.com","alipay.com","ctrip.com","weibo.com","zhihu","csdn.net","58.com","youku","iyiyi.com","bilibili"}
 	for _, localurl := range localurls {
 		if strings.Contains(s,localurl){
 			return true
