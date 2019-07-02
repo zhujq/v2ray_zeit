@@ -99,7 +99,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = r.URL.String()
 			str = strings.TrimLeft(str,`/`)
 			realhost = string([]byte(str)[0:strings.Index(str,`/`)])  //去掉首位的/后截取host
-			if realhost == `xjs` {             //google的signin目录暂时无法带上accounts.google.com
+			if realhost == `signin` {             //google的signin目录暂时无法带上accounts.google.com
 				realhost = `accounts.google.com`
 				str = realhost + `/` + str
 			}
