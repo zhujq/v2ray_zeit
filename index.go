@@ -99,10 +99,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = r.URL.String()
 			str = strings.TrimLeft(str,`/`)
 			realhost = string([]byte(str)[0:strings.Index(str,`/`)])  //去掉首位的/后截取host
-		//	if realhost == `xjs` {             //google的xjs目录暂时无法带上www.google.com
-		//		realhost = `www.google.com`
-		//		str = realhost + `/` + str
-		//	}
+			if realhost == `xjs` {             //google的signin目录暂时无法带上accounts.google.com
+				realhost = `accounts.google.com`
+				str = realhost + `/` + str
+			}
 
 			if realhost == `youtubei` || realhost == `yts` || realhost == `results` {      //youtube的youtubei yts results目录暂时无法带上www.youtube.com
 				realhost = `www.youtube.com`
@@ -140,6 +140,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		strreferer = strings.Replace(strreferer,`v2ray.14065567.now.sh/`,``,-1)
 		req.Header.Set(`Referer`,strreferer)
 	}
+
+	//删除zeit添加的头域
+	req.Header.Del(`X-Forwarded-For`)
+	req.Header.Del(`X-Zeit-Co-Forwarded-For`)
+	req.Header.Del(`X-Real-Ip`)
+	req.Header.Del(`X-Now-Trace`)
+	req.Header.Del(`X-Forwarded-Host`)
+	req.Header.Del(`X-Now-Deployment-Url`)
+	req.Header.Del(`X-Forwarded-Proto`)
+	req.Header.Del(`X-Now-Id`)
 
 	if err != nil {
         panic(err)
@@ -308,6 +318,7 @@ func modifylink(s string,realhost string) string{
 	tempstr = strings.Replace(tempstr,`url(https://`,`url(` + zhost, -1)
 	tempstr = strings.Replace(tempstr,`url('https://`,`url('` +zhost, -1)
 	tempstr = strings.Replace(tempstr,`url(//`,`url(` +zhost + realhost + `/`, -1)
+	tempstr = strings.Replace(tempstr,`url("//`,`url("` +zhost  + `/`, -1)
 	tempstr = strings.Replace(tempstr,`url(/`,`url(` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`url=https://`,`url=` +zhost,-1)
 	tempstr = strings.Replace(tempstr,`s='/images`,`s='` +zhost + realhost + `/images`, -1)
