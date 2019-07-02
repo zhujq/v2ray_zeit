@@ -94,7 +94,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			url = `https://www.youtube.com`+ r.URL.String() 
 			realhost = `www.youtube.com`
 
-        default:    //  经google、youtube入口后重新返回的网址的处理，分离出真实主机名称 
+        default:    //  经google、youtube入口后重新返回的网址和直接带上的域名的处理，分离出真实主机名称 
     	 	var str string
 			str = r.URL.String()
 			str = strings.TrimLeft(str,`/`)
@@ -318,7 +318,7 @@ func modifylink(s string,realhost string) string{
 	tempstr = strings.Replace(tempstr,`url(https://`,`url(` + zhost, -1)
 	tempstr = strings.Replace(tempstr,`url('https://`,`url('` +zhost, -1)
 	tempstr = strings.Replace(tempstr,`url(//`,`url(` +zhost + realhost + `/`, -1)
-	tempstr = strings.Replace(tempstr,`url("//`,`url("` +zhost  + `/`, -1)
+	tempstr = strings.Replace(tempstr,`url("//`,`url("` +zhost, -1)
 	tempstr = strings.Replace(tempstr,`url(/`,`url(` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`url=https://`,`url=` +zhost,-1)
 	tempstr = strings.Replace(tempstr,`s='/images`,`s='` +zhost + realhost + `/images`, -1)
@@ -327,6 +327,8 @@ func modifylink(s string,realhost string) string{
 	tempstr = strings.Replace(tempstr,`"url":"https://`,`"url":"` +zhost ,-1)
 	tempstr = strings.Replace(tempstr,`"url":"/`,`"url":"` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`='/`,`='` +zhost + realhost + `/`, -1)
+	
+	tempstr = strings.Replace(tempstr,`signin/v2`,zhost+`accounts.google.com/signin/v2`, -1)
 	
 	tempstr = strings.Replace(tempstr,`v2ray.14065567.now.sh/v2ray.14065567.now.sh`,`v2ray.14065567.now.sh`, -1)	 //有可能重复修改	
 	
