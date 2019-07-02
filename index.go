@@ -329,8 +329,10 @@ func modifylink(s string,realhost string) string{
 	tempstr = strings.Replace(tempstr,`='/`,`='` +zhost + realhost + `/`, -1)
 	
 	tempstr = strings.Replace(tempstr,`signin/v2`,zhost+`accounts.google.com/signin/v2`, -1)
-	
+
 	tempstr = strings.Replace(tempstr,`v2ray.14065567.now.sh/v2ray.14065567.now.sh`,`v2ray.14065567.now.sh`, -1)	 //有可能重复修改	
+	tempstr = strings.Replace(tempstr,`v2ray.14065567.now.sh/https://v2ray.14065567.now.sh`,`v2ray.14065567.now.sh`, -1)
+	
 	
 	return tempstr
 
