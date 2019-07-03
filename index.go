@@ -211,7 +211,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         	panic(err)
 		}
 	
-		if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get(`content-type`)),`text/html`){   //只有当返回200和文本类型时进行链接处理
+		if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get(`content-type`)),`text`){   //只有当返回200和文本类型时进行链接处理
 			if len(body) == 0 {
 				fmt.Println(`resp is empty`)
 				return
@@ -260,8 +260,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 		}
-
 		w.Write([]byte(body)) 
+		
 	}else {   //返回非文本类型，用stream模式处理
 		reader := bufio.NewReader(resp.Body)
 		caches := make([]byte, 10240) 
