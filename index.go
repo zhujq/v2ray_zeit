@@ -199,7 +199,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    		w.Header().Set(k,resp.Header.Get(k))
 	}
 	
-	if strings.Contains(string(resp.Header.Get(`content-type`)),`text`) || resp.StatusCode != 200{  //返回文本类型或者非200时的处理
+	if strings.Contains(string(resp.Header.Get(`content-type`)),`text`) {  //返回文本类型时的处理
 
 		body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
@@ -257,7 +257,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Write([]byte(body)) 
-	}else {   //返回状态码200且非文本类型，用stream模式处理
+	}else {   //返回非文本类型，用stream模式处理
 		reader := bufio.NewReader(resp.Body)
 		caches := make([]byte, 10240) 
 		for {
