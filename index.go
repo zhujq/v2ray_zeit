@@ -337,6 +337,8 @@ func modifylink(s string,realhost string) string{
 	tempstr = strings.Replace(tempstr,`"url":"https://`,`"url":"` +zhost ,-1)
 	tempstr = strings.Replace(tempstr,`"url":"/`,`"url":"` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`='/`,`='` +zhost + realhost + `/`, -1)
+	tempstr = strings.Replace(tempstr,`="/`,`="` +zhost + realhost + `/`, -1)
+	tempstr = strings.Replace(tempstr,`("/`,`("` +zhost + realhost + `/`, -1)
 	
 
 	tempstr = strings.Replace(tempstr,`v2ray.14065567.now.sh/v2ray.14065567.now.sh`,`v2ray.14065567.now.sh`, -1)	 //有可能重复修改	
