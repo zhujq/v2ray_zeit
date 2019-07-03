@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"io/ioutil"
 	"io"
-    "os"
 	"strings"
 	"strconv"
 	"bytes"
@@ -23,26 +22,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	)
 
 	switch r.URL.Path{
-		case `/`:
-			f, err := os.Open(`index.html`)
-			if err != nil {
-				w.WriteHeader(http.StatusNotFound)
-				return
-			}
-			defer f.Close()
-			w.Header().Set(`content-type`,`text/html`)
-			io.Copy(w, f)
-			return
-		case `/wall.jpg`:
-			f, err := os.Open(`wall.jpg`)
-			if err != nil {
-				w.WriteHeader(http.StatusNotFound)
-				return
-			}
-			defer f.Close()
-			w.Header().Set(`content-type`,`image/jpeg`)
-			io.Copy(w, f)
-			return
 		case `/manager/`:
 			db, err := sql.Open("mysql","zhujq:Juju1234@tcp(35.230.121.24:3316)/zeit")
 			if err != nil {
@@ -137,7 +116,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	
 	client := &http.Client{}
 	req, err := http.NewRequest(r.Method, url, nil)
-
+	if err != nil {
+        panic(err)
+    }
 	req.Header = r.Header     //删除请求头压缩选项，否则无法对返回的文本的链接内容进行处理,20190625 调用compress/gzip进行压缩和解压缩,且只用gzip
 	if  strings.Contains(string(req.Header.Get(`Accept-Encoding`)),`gzip`){
 		req.Header.Set(`Accept-Encoding`,`gzip`)  
@@ -149,7 +130,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		strreferer = strings.Replace(strreferer,`v2ray.14065567.now.sh/`,``,-1)
 		req.Header.Set(`Referer`,strreferer)
 	}
-
+	req.Header.Set(`Host`,realhost)    // 设置请求头的真实host
 	//删除zeit添加的头域
 	req.Header.Del(`X-Forwarded-For`)
 	req.Header.Del(`X-Zeit-Co-Forwarded-For`)
@@ -160,9 +141,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	req.Header.Del(`X-Forwarded-Proto`)
 	req.Header.Del(`X-Now-Id`)
 
-	if err != nil {
-        panic(err)
-    }
+	
 	req.Body = r.Body   //加入POST时的Body
 	req.Form = r.Form
 	req.PostForm = r.PostForm
