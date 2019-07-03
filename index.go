@@ -322,7 +322,7 @@ func modifylink(s string,realhost string) string{
 	//script的url修正
 	tempstr = strings.Replace(tempstr,`url(https://`,`url(` + zhost, -1)
 	tempstr = strings.Replace(tempstr,`url('https://`,`url('` +zhost, -1)
-	tempstr = strings.Replace(tempstr,`url(//`,`url(` +zhost + realhost + `/`, -1)
+	tempstr = strings.Replace(tempstr,`url(//`,`url(` +zhost, -1)
 	tempstr = strings.Replace(tempstr,`url("//`,`url("` +zhost, -1)
 	tempstr = strings.Replace(tempstr,`url(/`,`url(` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`url=https://`,`url=` +zhost,-1)
