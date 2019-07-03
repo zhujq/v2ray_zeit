@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"net/http"
 	"io/ioutil"
+	"io"
+    "os"
 	"strings"
 	"strconv"
 	"bytes"
 	"compress/gzip"
 	"database/sql"
+	"bufio"
     _ "github.com/go-sql-driver/mysql"
 )
 const zhost string = `https://v2ray.14065567.now.sh/`
@@ -21,18 +24,24 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.URL.Path{
 		case `/`:
-			fmt.Fprintf(w, "Welcome you,your info:\r\n")
-			fmt.Fprintf(w, "METHOD:"+r.Method+"\r\n")
-			fmt.Fprintf(w, "URL:\r\n")
-			fmt.Fprintf(w, "PATH:"+r.URL.Path+"\r\n")
-			fmt.Fprintf(w, "SCHEME:"+r.URL.Scheme+"\r\n")
-			fmt.Fprintf(w, "HOST:"+r.URL.Host+"URL-End\r\n")
-    		fmt.Fprintf(w, "Proto:"+r.Proto+"\r\n")
-			fmt.Fprintf(w, "HOST:"+r.Host+"\r\n")
-			fmt.Fprintf(w, "RequestUrl:"+r.RequestURI+"\r\n")
-			for k,_ := range r.Header {
-			    fmt.Fprintf(w, k+""+r.Header.Get(k)+"\r\n")
+			f, err := os.Open(`./index.html`)
+			if err != nil {
+				w.WriteHeader(http.StatusNotFound)
+				return
 			}
+			defer f.Close()
+			w.Header().Set(`content-type`,`text/html`)
+			io.Copy(w, f)
+			return
+		case `/wall.jpg`:
+			f, err := os.Open(`./wall.jpg`)
+			if err != nil {
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
+			defer f.Close()
+			w.Header().Set(`content-type`,`image/jpeg`)
+			io.Copy(w, f)
 			return
 		case `/manager/`:
 			db, err := sql.Open("mysql","zhujq:Juju1234@tcp(35.230.121.24:3316)/zeit")
@@ -211,62 +220,79 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    		w.Header().Set(k,resp.Header.Get(k))
 	}
 	
-	body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-        panic(err)
-	}
-	
-	if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get(`content-type`)),`text`){   //只有当返回200和文本类型时进行链接处理
-		if len(body) == 0 {
-			fmt.Println(`resp is empty`)
-			return
-		}
-		
-		if resp.Header.Get(`Content-Encoding`) == `gzip`{
-			body,err = gzipdecode(body)
+	if strings.Contains(string(resp.Header.Get(`content-type`)),`text`) || resp.StatusCode != 200{  //返回文本类型或者非200时的处理
+
+		body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				panic(err)
-			}
+        	panic(err)
 		}
+	
+		if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get(`content-type`)),`text`){   //只有当返回200和文本类型时进行链接处理
+			if len(body) == 0 {
+				fmt.Println(`resp is empty`)
+				return
+			}
 		
-		modifiedrsp := []byte{}
-		tomodifystr := ``
-		for _,v := range body {
-			if string(v) == `<` {
-				if len(tomodifystr) >0 {
+			if resp.Header.Get(`Content-Encoding`) == `gzip`{
+				body,err = gzipdecode(body)
+				if err != nil {
+					panic(err)
+				}
+			}
+		
+			modifiedrsp := []byte{}
+			tomodifystr := ``
+			for _,v := range body {
+				if string(v) == `<` {
+					if len(tomodifystr) >0 {
+						tomodifystr = modifylink(tomodifystr,realhost)
+						for _,vv := range tomodifystr {
+							modifiedrsp = append(modifiedrsp,byte(vv))
+						}
+						tomodifystr = ``
+					}
+					tomodifystr += string(v)
+				}else if string(v) == `>` {
+					tomodifystr += string(v)
 					tomodifystr = modifylink(tomodifystr,realhost)
 					for _,vv := range tomodifystr {
 						modifiedrsp = append(modifiedrsp,byte(vv))
 					}
 					tomodifystr = ``
+				}else{
+					tomodifystr += string(v)
 				}
-				tomodifystr += string(v)
-			}else if string(v) == `>` {
-				tomodifystr += string(v)
-				tomodifystr = modifylink(tomodifystr,realhost)
-				for _,vv := range tomodifystr {
-					modifiedrsp = append(modifiedrsp,byte(vv))
-				}
-				tomodifystr = ``
-			}else{
-				tomodifystr += string(v)
 			}
+
+			body = modifiedrsp
+		
+		
+			if resp.Header.Get("Content-Encoding") == "gzip" {    //如果resp指示压缩，还需要对解开的处理后的内容重新压缩
+				body,err = gzipencode(body)
+				if err != nil {
+					panic(err)
+				}
+
+			}
+
 		}
 
-		body = modifiedrsp
-		
-		
-		if resp.Header.Get("Content-Encoding") == "gzip" {    //如果resp指示压缩，还需要对解开的处理后的内容重新压缩
-			body,err = gzipencode(body)
+		w.Write([]byte(body)) 
+	}else {   //返回状态码200且非文本类型，用stream模式处理
+		reader := bufio.NewReader(resp.Body)
+		caches := make([]byte, 102400) 
+		for {
+			_, err :=reader.Read(caches)
 			if err != nil {
-				panic(err)
-			}
-
+				if err == io.EOF {
+					break
+				}else{
+					panic(err)
+				}
+			} 
+			w.Write(caches)
 		}
-
-	}
-
-	w.Write([]byte(body))        
+	}       
 }
 
 func modifylink(s string,realhost string) string{
