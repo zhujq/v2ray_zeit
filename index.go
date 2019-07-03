@@ -259,7 +259,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(body)) 
 	}else {   //返回状态码200且非文本类型，用stream模式处理
 		reader := bufio.NewReader(resp.Body)
-		caches := make([]byte, 102400) 
+		caches := make([]byte, 10240) 
 		for {
 			_, err :=reader.Read(caches)
 			if err != nil {
