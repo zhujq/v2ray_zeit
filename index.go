@@ -146,16 +146,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	req.Form = r.Form
 	req.PostForm = r.PostForm
 	req.MultipartForm = r.MultipartForm
+	
+	fmt.Println(r.Method,` URL:`+url)	//记录访问记录
 
 	resp, err := client.Do(req)
-	
-	fmt.Println(r.Method,` URL:`+url,`resp len,status,type,Enc:`,strconv.FormatInt(resp.ContentLength,10),resp.Status,resp.Header.Get(`content-type`),resp.Header.Get(`Content-Encoding`))	//记录访问记录
-	s, _ := ioutil.ReadAll(r.Body)
-	fmt.Println(`Request Body:`)
-	fmt.Println(s)
-    if err != nil {
+	if err != nil {
         panic(err)
     }
+	
+	fmt.Println(`resp len,status,type,Enc:`,strconv.FormatInt(resp.ContentLength,10),resp.Status,resp.Header.Get(`content-type`),resp.Header.Get(`Content-Encoding`))	//记录访问记录
+//	s, _ := ioutil.ReadAll(r.Body)
+//	fmt.Println(`Request Body:`)
+//	fmt.Println(s)
+   
 
 	db, err := sql.Open("mysql","zhujq:Juju1234@tcp(35.230.121.24:3316)/zeit")
 	if err == nil {
