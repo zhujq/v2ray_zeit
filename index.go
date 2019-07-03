@@ -24,7 +24,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.URL.Path{
 		case `/`:
-			f, err := os.Open(`./index.html`)
+			f, err := os.Open(`index.html`)
 			if err != nil {
 				w.WriteHeader(http.StatusNotFound)
 				return
@@ -34,7 +34,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			io.Copy(w, f)
 			return
 		case `/wall.jpg`:
-			f, err := os.Open(`./wall.jpg`)
+			f, err := os.Open(`wall.jpg`)
 			if err != nil {
 				w.WriteHeader(http.StatusNotFound)
 				return
