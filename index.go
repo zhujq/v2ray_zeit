@@ -100,7 +100,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				str = realhost + `/` + str
 			}
 
-			if  realhost ==`search` || realhost ==`logos` {             //google的signin目录暂时无法带上www.google.com
+			if  realhost ==`xjs` || realhost ==`logos` {             //google的signin目录暂时无法带上www.google.com
 				realhost = `www.google.com`
 				str = realhost + `/` + str
 			}
