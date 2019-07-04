@@ -211,7 +211,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         	panic(err)
 		}
 	
-		if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get(`content-type`)),`text`){   //只有当返回200和文本类型时进行链接处理
+		if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get(`content-type`)),`text/html`){   //当返回200和html文本类型时进行链接处理
 			if len(body) == 0 {
 				fmt.Println(`resp is empty`)
 				return
@@ -258,8 +258,41 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				}
 
 			}
+		}
+		if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get(`content-type`)),`text/javascript`){  //返回200的javascript处理
+			if resp.Header.Get(`Content-Encoding`) == `gzip`{
+				body,err = gzipdecode(body)
+				if err != nil {
+					panic(err)
+				}
+			}
+			reader := bytes.NewReader(body)
+			r := bufio.NewReader(reader)
+			modifiedrsp := []byte{}
+			tomodifystr := ``
+			for {
+				slice, err := r.ReadBytes('\n')  // '\n'表示按行读取。 ','表示按英文逗号读取。
+				tomodifystr = string(slice)
+				tomodifystr = modifylink(tomodifystr,realhost)
+				for _,vv := range tomodifystr {
+					modifiedrsp = append(modifiedrsp,byte(vv))
+				}
+
+				if err == io.EOF {  // 如果读取到文件末尾
+					break
+				}
+			}
+			body = modifiedrsp
+			if resp.Header.Get("Content-Encoding") == "gzip" {    //如果resp指示压缩，还需要对解开的处理后的内容重新压缩
+				body,err = gzipencode(body)
+				if err != nil {
+					panic(err)
+				}
+
+			}
 
 		}
+
 		w.Write([]byte(body)) 
 		
 	}else {   //返回非文本类型，用stream模式处理
