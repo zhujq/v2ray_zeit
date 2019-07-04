@@ -82,6 +82,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			url = `https://www.youtube.com`+ r.URL.String() 
 			realhost = `www.youtube.com`
 
+		case `/favicon.ico`:
+			url = `https://www.google.com/favicon.ico`
+			realhost = `www.google.com`
+
+		case `/search`:
+			url = `https://www.google.com`+ r.URL.String() 
+			realhost = `www.google.com`
+
         default:    //  经google、youtube入口后重新返回的网址和直接带上的域名的处理，分离出真实主机名称 
     	 	var str string
 			str = r.URL.String()
