@@ -228,6 +228,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    		w.Header().Set(k,resp.Header.Get(k))
 	}
 	
+	w.Header.Set(`Access-Control-Allow-Origin`,`*`)
+
 	if strings.Contains(string(resp.Header.Get(`content-type`)),`text`) ||  strings.Contains(string(resp.Header.Get(`content-type`)),`json`){  //返回文本类型时的处理
 
 		body, err := ioutil.ReadAll(resp.Body)
