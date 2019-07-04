@@ -228,7 +228,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    		w.Header().Set(k,resp.Header.Get(k))
 	}
 	
-	w.Header.Set(`Access-Control-Allow-Origin`,`*`)
+	w.Header().Set(`Access-Control-Allow-Origin`,`*`) //跨域名可用，防止浏览器阻止
 
 	if strings.Contains(string(resp.Header.Get(`content-type`)),`text`) ||  strings.Contains(string(resp.Header.Get(`content-type`)),`json`){  //返回文本类型时的处理
 
