@@ -133,13 +133,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         panic(err)
     }
 	req.Header = r.Header     //删除请求头压缩选项，否则无法对返回的文本的链接内容进行处理,20190625 调用compress/gzip进行压缩和解压缩,且只用gzip
-	if strings.HasSuffix(url,`.html`) || strings.HasSuffix(url,`.htm`) || strings.HasSuffix(url,`/`) {
-		if  strings.Contains(string(req.Header.Get(`Accept-Encoding`)),`gzip`){
-			req.Header.Set(`Accept-Encoding`,`gzip`)  
-		}else {
-			req.Header.Del(`Accept-Encoding`)   
-		}
-	}	
+	
+	if  strings.Contains(string(req.Header.Get(`Accept-Encoding`)),`gzip`){
+		req.Header.Set(`Accept-Encoding`,`gzip`)  
+	}else {
+		req.Header.Del(`Accept-Encoding`)   
+	}
+	
 	strreferer := string(req.Header.Get("Referer"))     //修改referer
 	if strings.Contains(strreferer,`v2ray.14065567.now.sh/`){
 		strreferer = strings.Replace(strreferer,`v2ray.14065567.now.sh/`,``,-1)
