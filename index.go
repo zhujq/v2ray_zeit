@@ -146,6 +146,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		req.Header.Set(`Referer`,strreferer)
 	}
 	req.Header.Set(`Host`,realhost)    // 设置请求头的真实host
+	strorigin := string(req.Header.Get("Origin"))
+	if strings.Contains(strorigin,`v2ray.14065567.now.sh`){  //设置head的origin
+		req.Header.Set(`Origin`,`https://`+ realhost + `/`)
+	}
 	//删除zeit添加的头域
 	req.Header.Del(`X-Forwarded-For`)
 	req.Header.Del(`X-Zeit-Co-Forwarded-For`)
@@ -389,7 +393,7 @@ func modifylink(s string,realhost string) string{
 
 	tempstr = strings.Replace(tempstr,`v2ray.14065567.now.sh/v2ray.14065567.now.sh`,`v2ray.14065567.now.sh`, -1)	 //有可能重复修改	
 	tempstr = strings.Replace(tempstr,`v2ray.14065567.now.sh/https://v2ray.14065567.now.sh`,`v2ray.14065567.now.sh`, -1)
-	
+	tempstr = strings.Replace(tempstr,realhost + `//` + realhost ,realhost, -1)
 	
 	return tempstr
 
