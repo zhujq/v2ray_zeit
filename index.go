@@ -127,6 +127,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
+	//url处理
+	if strings.Count(url,`//`) > 1{
+		n := strings.LastIndex(url,`//`)
+		url = string([]byte(str)[n:])
+		url = `https:` + url
+	}
+
 	client := &http.Client{}
 	req, err := http.NewRequest(r.Method, url, nil)
 	if err != nil {
