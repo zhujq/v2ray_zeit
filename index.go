@@ -87,12 +87,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str = r.URL.String()
 			str = strings.TrimLeft(str,`/`)
 			realhost = string([]byte(str)[0:strings.Index(str,`/`)])  //去掉首位的/后截取host
-			if realhost == `signin` || realhost ==`search` realhost ==`logons` {             //google的signin目录暂时无法带上accounts.google.com
+			if realhost == `signin`  {             //google的signin目录暂时无法带上accounts.google.com
 				realhost = `accounts.google.com`
 				str = realhost + `/` + str
 			}
 
-			if  realhost ==`search` realhost ==`logons` {             //google的signin目录暂时无法带上www.google.com
+			if  realhost ==`search` || realhost ==`logons` {             //google的signin目录暂时无法带上www.google.com
 				realhost = `www.google.com`
 				str = realhost + `/` + str
 			}
