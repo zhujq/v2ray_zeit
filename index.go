@@ -228,7 +228,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    		w.Header().Set(k,resp.Header.Get(k))
 	}
 	
-	if strings.Contains(string(resp.Header.Get(`content-type`)),`text`) {  //返回文本类型时的处理
+	if strings.Contains(string(resp.Header.Get(`content-type`)),`text`) ||  strings.Contains(string(resp.Header.Get(`content-type`)),`json`){  //返回文本类型时的处理
 
 		body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
@@ -283,7 +283,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 			}
 		}
-		if resp.StatusCode == 200 && strings.Contains(string(resp.Header.Get(`content-type`)),`text/javascript`){  //返回200的javascript处理
+		if resp.StatusCode == 200 && (strings.Contains(string(resp.Header.Get(`content-type`)),`text/javascript`) || strings.Contains(string(resp.Header.Get(`content-type`)),`json`)){  //返回200的javascript和json处理
 			if resp.Header.Get(`Content-Encoding`) == `gzip`{
 				body,err = gzipdecode(body)
 				if err != nil {
