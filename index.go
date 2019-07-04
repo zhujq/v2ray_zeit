@@ -185,6 +185,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 //	fmt.Println(`Request Body:`)
 //	fmt.Println(s)
    
+	resp.Header.Set(`Access-Control-Allow-Origin`,`*`) //跨域名可用，防止浏览器阻止
 
 	db, err := sql.Open("mysql","zhujq:Juju1234@tcp(35.230.121.24:3316)/zeit")
 	if err == nil {
@@ -228,7 +229,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    		w.Header().Set(k,resp.Header.Get(k))
 	}
 	
-	w.Header().Set(`Access-Control-Allow-Origin`,`*`) //跨域名可用，防止浏览器阻止
+	
 
 	if strings.Contains(string(resp.Header.Get(`content-type`)),`text`) ||  strings.Contains(string(resp.Header.Get(`content-type`)),`json`){  //返回文本类型时的处理
 
