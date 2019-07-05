@@ -262,7 +262,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     defer resp.Body.Close()
         	
     for k, _ := range resp.Header{
-		if k == `Cookie`{  //对返回的cookie，存入数据库，不返回给浏览器
+		if k == `Set-Cookie`{  //对返回的cookie，存入数据库，不返回给浏览器
 			for _, v := range resp.Cookies() {
 				var insertsql = `insert into cookies(uid,name,value,domain,path) values("`+strconv.Itoa(uid) +`","` + v.Name +`","`+  v.Value +`","`+  v.Domain +`","`+  v.Path  +`");`
 				_,err := db.Exec(insertsql)
@@ -278,6 +278,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "raynowid",
 		Value:   strconv.Itoa(uid),
+		Domain:  "v2ray.14065567.now.sh",
+		Path:    "/"
 	})
 	
 	
