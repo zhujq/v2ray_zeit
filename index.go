@@ -440,9 +440,16 @@ func modifylink(s string,realhost string) string{
 	//script的url修正
 	tempstr = strings.Replace(tempstr,`url(https://`,`url(` + zhost, -1)
 	tempstr = strings.Replace(tempstr,`url('https://`,`url('` +zhost, -1)
-	tempstr = strings.Replace(tempstr,`url(//`,`url(` +zhost, -1)
+	tempstr = strings.Replace(tempstr,`url('//`,`url('` +zhost, -1)
 	tempstr = strings.Replace(tempstr,`url("//`,`url("` +zhost, -1)
-	tempstr = strings.Replace(tempstr,`url(/`,`url(` +zhost + realhost + `/`, -1)
+
+	temp := strings.Replace(tempstr,`url(//`,`url(` +zhost, -1)
+	if len(temp) != len(tempstr){
+		tempstr = temp
+	}else{
+		tempstr = strings.Replace(tempstr,`url(/`,`url(` +zhost + realhost + `/`, -1)
+	}
+
 	tempstr = strings.Replace(tempstr,`url=https://`,`url=` +zhost,-1)
 	tempstr = strings.Replace(tempstr,`s='/images`,`s='` +zhost + realhost + `/images`, -1)
 	tempstr = strings.Replace(tempstr,`http:\/\/`,`https:\/\/` +`v2ray.14065567.now.sh` + `\/`,-1)
@@ -451,9 +458,14 @@ func modifylink(s string,realhost string) string{
 	tempstr = strings.Replace(tempstr,`"url":"/`,`"url":"` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`='/`,`='` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`="/`,`="` +zhost + realhost + `/`, -1)
-	tempstr = strings.Replace(tempstr,`("/`,`("` +zhost + realhost + `/`, -1)
 	
-
+	temp = strings.Replace(tempstr,`("//`,`("` +zhost, -1)
+	if len(temp) != len(tempstr){
+		tempstr = temp
+	}else{
+		tempstr = strings.Replace(tempstr,`("/`,`("` +zhost + realhost + `/`, -1)
+	}
+	
 	tempstr = strings.Replace(tempstr,`v2ray.14065567.now.sh/v2ray.14065567.now.sh`,`v2ray.14065567.now.sh`, -1)	 //有可能重复修改	
 	tempstr = strings.Replace(tempstr,`v2ray.14065567.now.sh/https://v2ray.14065567.now.sh`,`v2ray.14065567.now.sh`, -1)
 	tempstr = strings.Replace(tempstr,realhost + `//` + realhost ,realhost, -1)
