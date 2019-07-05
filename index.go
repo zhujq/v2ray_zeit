@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"io/ioutil"
 	"io"
 	"strings"
@@ -11,14 +12,17 @@ import (
 	"compress/gzip"
 	"database/sql"
 	"bufio"
+	"time"
+	"math/rand"
     _ "github.com/go-sql-driver/mysql"
 )
 const zhost string = `https://v2ray.14065567.now.sh/`
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	var (
-		url =``
+		realurl =``
 		realhost =``
+		uid = 0
 	)
 
 	switch r.URL.Path{
@@ -67,27 +71,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return
 
 		case `/google/`:    //google入口
-			url = zhost + `www.google.com/`
+			realurl = zhost + `www.google.com/`
 			realhost = `www.google.com`
-			http.Redirect(w, r, url, 307)
+			http.Redirect(w, r, realurl, 307)
 			return
 			  
     	case `/youtube/`:   //youtube入口
-			url = zhost + `www.youtube.com/`
+			realurl = zhost + `www.youtube.com/`
 			realhost = `www.youtube.com`
-			http.Redirect(w, r, url, 307)
+			http.Redirect(w, r, realurl, 307)
 			return	
 		
 		case `/watch`:   //youtube入口
-			url = `https://www.youtube.com`+ r.URL.String() 
+			realurl = `https://www.youtube.com`+ r.URL.String() 
 			realhost = `www.youtube.com`
 
 		case `/favicon.ico`:
-			url = `https://www.google.com/favicon.ico`
+			realurl = `https://www.google.com/favicon.ico`
 			realhost = `www.google.com`
 
 		case `/search`:
-			url = `https://www.google.com`+ r.URL.String() 
+			realurl = `https://www.google.com`+ r.URL.String() 
 			realhost = `www.google.com`
 
         default:    //  经google、youtube入口后重新返回的网址和直接带上的域名的处理，分离出真实主机名称 
@@ -117,25 +121,25 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Scheme == ``{
 				r.URL.Scheme = `https`
 			}
-			url = r.URL.Scheme + `://` + str
+			realurl = r.URL.Scheme + `://` + str
         	
 	}
 
 	if toredirect(realhost){             //判断如果是国内域名，则指示重定向
 	//	fmt.Println(r.Method,` URL:`+url,` LocalRealHost:`,realhost)	
-		http.Redirect(w, r, url, 307)
+		http.Redirect(w, r, realurl, 307)
 		return
 	}
 	
 	//url处理
-	if strings.Count(url,`//`) > 1{
-		n := strings.LastIndex(url,`//`)
-		url = string([]byte(url)[n:])
-		url = `https:` + url
+	if strings.Count(realurl,`//`) > 1{
+		n := strings.LastIndex(realurl,`//`)
+		realurl = string([]byte(realurl)[n:])
+		realurl = `https:` + realurl
 	}
 
 	client := &http.Client{}
-	req, err := http.NewRequest(r.Method, url, nil)
+	req, err := http.NewRequest(r.Method, realurl, nil)
 	if err != nil {
         panic(err)
     }
@@ -166,14 +170,57 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	req.Header.Del(`X-Now-Deployment-Url`)
 	req.Header.Del(`X-Forwarded-Proto`)
 	req.Header.Del(`X-Now-Id`)
-
-	
 	req.Body = r.Body   //加入POST时的Body
 	req.Form = r.Form
 	req.PostForm = r.PostForm
 	req.MultipartForm = r.MultipartForm
-	
-	fmt.Println(r.Method,` URL:`+url)	//记录访问记录
+
+
+	db, err := sql.Open("mysql","zhujq:Juju1234@tcp(35.230.121.24:3316)/zeit")
+	err = db.Ping()
+	if err != nil{
+		fmt.Println(err.Error() )	
+	}
+
+	//读取或设置cookie中的uid,并根据访问URL设置req的cookies
+	localcookie, err := r.Cookie("raynowid")
+	if err == http.ErrNoCookie {                   //没有带cookie上来时重新分配一个，req时不带cookie
+		uid = RandomNumber()
+		req.Header.Del(`Cookie`)
+    }else{
+		uid, _ = strconv.Atoi(localcookie.Value)   //根据uid和url cookie表的匹配关系设置req的cookie
+		req.Header.Del(`Cookie`)
+		rows, err := db.Query(`select name,value,domain,path from cookies where uid =`+ strconv.Itoa(uid)+`;`)
+		if err != nil {
+			fmt.Println(err.Error() )	
+		}
+		defer rows.Close()
+		var (
+			cookiename = ``
+			cookievalue =``
+			cookiedomain =``
+			cookiepath =``
+		)
+		u, err := url.Parse(realurl)
+		for rows.Next() {	
+			if err = rows.Scan(&cookiename,&cookievalue,&cookiedomain,&cookiepath); err != nil {
+				fmt.Println(err.Error() )	
+			}else{
+				if strings.HasSuffix(u.Host,cookiedomain) &&  strings.HasPrefix(u.Path,cookiepath) {
+					req.AddCookie(&http.Cookie{
+						Name:    cookiename,
+						Value:   cookievalue,
+					})
+				}
+			}
+		}
+			
+		if err = rows.Err(); err != nil {
+			fmt.Println(err.Error() )	
+		}
+	}
+
+	fmt.Println(r.Method,` URL:`+realurl,` uid:`+strconv.Itoa(uid))	//记录访问记录
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -187,47 +234,51 @@ func Handler(w http.ResponseWriter, r *http.Request) {
    
 	resp.Header.Set(`Access-Control-Allow-Origin`,`*`) //跨域名可用，防止浏览器阻止
 
-	db, err := sql.Open("mysql","zhujq:Juju1234@tcp(35.230.121.24:3316)/zeit")
-	if err == nil {
-		err = db.Ping()
-		if err == nil {
-			reqhead := ``
-			for k, _ := range r.Header {
-				reqhead += k
-				reqhead += `:`
-				reqhead += r.Header.Get(k)
-				reqhead += `<br>`
-			}
-			reqhead =  strings.Replace(reqhead,`"`,`\"`,-1) //存入mysql时要把“转义
-			rsphead := ``
-			for k, _ := range resp.Header {
-				rsphead += k
-				rsphead += `:`
-				rsphead += resp.Header.Get(k)
-				rsphead += `<br>`
-			}
-			rsphead =  strings.Replace(rsphead,`"`,`\"`,-1)
-			var insertsql = `insert into visits(method,url,head,rsp_status,rsp_head,rsp_legnth) values(`+`"` + r.Method +`","` + url +`","`+ reqhead +`","` + resp.Status +`","` + rsphead + `","` + strconv.FormatInt(resp.ContentLength,10)+`");`
-		//	fmt.Println(insertsql)	
-			_,err := db.Exec(insertsql)
-			if err != nil{
-				fmt.Println(err.Error() )	
-			}
-
-		}else{
-			fmt.Println(err.Error() )	
-		}
-		
-	}else{
+	reqhead := ``
+	for k, _ := range r.Header {
+		reqhead += k
+		reqhead += `:`
+		reqhead += r.Header.Get(k)
+		reqhead += `<br>`
+	}
+	reqhead =  strings.Replace(reqhead,`"`,`\"`,-1) //存入mysql时要把“转义
+	rsphead := ``
+	for k, _ := range resp.Header {
+		rsphead += k
+		rsphead += `:`
+		rsphead += resp.Header.Get(k)
+		rsphead += `<br>`
+	}
+	rsphead =  strings.Replace(rsphead,`"`,`\"`,-1)
+	var insertsql = `insert into visits(method,url,head,rsp_status,rsp_head,rsp_legnth) values("` + r.Method +`","` + realurl +`","`+ reqhead +`","` + resp.Status +`","` + rsphead + `","` + strconv.FormatInt(resp.ContentLength,10)+`");`
+	//	fmt.Println(insertsql)	
+	_,err = db.Exec(insertsql)
+	if err != nil{
 		fmt.Println(err.Error() )	
 	}
+
 	defer db.Close()
 
     defer resp.Body.Close()
         	
     for k, _ := range resp.Header{
-   		w.Header().Set(k,resp.Header.Get(k))
+		if k == `Cookie`{  //对返回的cookie，存入数据库，不返回给浏览器
+			for _, v := range resp.Cookies() {
+				var insertsql = `insert into cookies(uid,name,value,domain,path) values("`+strconv.Itoa(uid) +`","` + v.Name +`","`+  v.Value +`","`+  v.Domain +`","`+  v.Path  +`");`
+				_,err := db.Exec(insertsql)
+				if err != nil{
+					fmt.Println(err.Error() )	
+				}
+			}
+		}else {
+			   w.Header().Set(k,resp.Header.Get(k))
+		}
 	}
+	
+	http.SetCookie(w, &http.Cookie{
+		Name:    "raynowid",
+		Value:   strconv.Itoa(uid),
+	})
 	
 	
 
@@ -453,3 +504,8 @@ func gzipdecode(in []byte) ([]byte, error) {
 }
 
 
+func RandomNumber() int {
+    r := rand.New(rand.NewSource(time.Now().Unix()))
+    num := r.Intn(10000)
+    return num
+}
