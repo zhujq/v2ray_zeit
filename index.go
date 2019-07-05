@@ -279,7 +279,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		Name:    "raynowid",
 		Value:   strconv.Itoa(uid),
 		Domain:  "v2ray.14065567.now.sh",
-		Path:    "/"
+		Path:    "/",
 	})
 	
 	
