@@ -381,14 +381,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 	}else if strings.Contains(string(resp.Header.Get(`content-type`)),`application/x-www-form-urlencoded`) {
 		body, _ := ioutil.ReadAll(resp.Body)
+		if resp.Header.Get(`Content-Encoding`) == `gzip`{
+			body,err = gzipdecode(body)
+			if err != nil {
+				panic(err)
+			}
+		}
 		fmt.Println (len(body))
 		answer, err := url.ParseQuery(string(body))
 		if err != nil{
 			fmt.Println(err.Error() )	
 		}
 		for k,v:= range answer {
-			fmt.Fprintf(w,k)
-			fmt.Fprintf(w,v[0])
+			fmt.Fprintf(w,"k=%s",k)
+			fmt.Fprintf(w,"v=%s",v[0])
 		}
 
 
