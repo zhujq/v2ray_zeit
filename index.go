@@ -101,13 +101,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(resp.Header.Get(`content-type`))
 			fmt.Println(resp.Header.Get(`Content-Encoding`))
 			body, err := ioutil.ReadAll(resp.Body)
+			fmt.Println (len(body))
 			answer, err := url.ParseQuery(string(body))
 			for k,v:= range answer {
 				fmt.Fprintf(w,k)
 				fmt.Fprintf(w,v[0])
 			}
 			return
-			
+
 		case `/favicon.ico`:
 			realurl = `https://www.google.com/favicon.ico`
 			realhost = `www.google.com`
