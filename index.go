@@ -85,8 +85,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		case `/watch`:   //youtube入口
 		//	realurl = `https://www.youtube.com`+ r.URL.String() 
 		//	realhost = `www.youtube.com`
-			str :=   r.URL.String()
-			videoid :=  strings.TrimLeft(str,`=`)
+			str :=   r.URL.String()		
+			videoid :=  string([]byte(str)[ strings.LastIndex(str,`=`):])
 			realurl = `https://www.youtube.com/get_video_info?video_id=` + videoid
 			realhost = `www.youtube.com`
 
