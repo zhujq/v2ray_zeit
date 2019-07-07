@@ -106,7 +106,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w,k)
 				fmt.Fprintf(w,v[0])
 			}
-
+			return
+			
 		case `/favicon.ico`:
 			realurl = `https://www.google.com/favicon.ico`
 			realhost = `www.google.com`
