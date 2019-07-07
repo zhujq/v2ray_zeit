@@ -393,8 +393,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err.Error() )	
 		}
 		for k,v:= range answer {
-			fmt.Fprintf(w,"k=%s",k)
-			fmt.Fprintf(w,"v=%s",v[0])
+			fmt.Fprintf(w,"k=%s\r\n",k)
+			fmt.Fprintf(w,"v=%s\r\n",v[0])
 		}
 
 
