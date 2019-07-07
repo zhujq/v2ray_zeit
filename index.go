@@ -87,7 +87,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		//	realhost = `www.youtube.com`
 			str :=   r.URL.String()		
 			videoid :=  string([]byte(str)[ strings.LastIndex(str,`=`):])
-			realurl = `https://www.youtube.com/get_video_info?video_id=` + videoid
+			realurl = `https://www.youtube.com/get_video_info?video_id` + videoid
 			realhost = `www.youtube.com`
 
 		case `/favicon.ico`:
