@@ -83,8 +83,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return	
 		
 		case `/watch`:   //youtube入口
-			realurl = `https://www.youtube.com`+ r.URL.String() 
-			realhost = `www.youtube.com`
+		//	realurl = `https://www.youtube.com`+ r.URL.String() 
+		//	realhost = `www.youtube.com`
+			str :=   r.URL.String()
+			videoid :=  strings.TrimLeft(str,`=`)
+			realurl = `https://www.youtube.com/get_video_info?video_id=` + videoid
+			resp, err := http.Get(realurl)
+			if err != nil {
+				fmt.Println(err.Error() )	
+				return
+			}
+			defer resp.Body.Close()
+			if resp.StatusCode != 200 {
+				fmt.Println("error get rsp")
+				return 
+			}
+			fmt.Println(resp.Header.Get(`content-type`))
+			fmt.Println(resp.Header.Get(`Content-Encoding`))
+			body, err := ioutil.ReadAll(resp.Body)
+			answer, err := url.ParseQuery(string(body))
+			for k,v:= range answer {
+				fmt.Fprintf(w,k)
+				fmt.Fprintf(w,v[0])
+			}
 
 		case `/favicon.ico`:
 			realurl = `https://www.google.com/favicon.ico`
