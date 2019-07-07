@@ -88,26 +88,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			str :=   r.URL.String()
 			videoid :=  strings.TrimLeft(str,`=`)
 			realurl = `https://www.youtube.com/get_video_info?video_id=` + videoid
-			resp, err := http.Get(realurl)
-			if err != nil {
-				fmt.Println(err.Error() )	
-				return
-			}
-			defer resp.Body.Close()
-			if resp.StatusCode != 200 {
-				fmt.Println("error get rsp")
-				return 
-			}
-			fmt.Println(resp.Header.Get(`content-type`))
-			fmt.Println(resp.Header.Get(`Content-Encoding`))
-			body, err := ioutil.ReadAll(resp.Body)
-			fmt.Println (len(body))
-			answer, err := url.ParseQuery(string(body))
-			for k,v:= range answer {
-				fmt.Fprintf(w,k)
-				fmt.Fprintf(w,v[0])
-			}
-			return
+			realhost = `www.youtube.com`
 
 		case `/favicon.ico`:
 			realurl = `https://www.google.com/favicon.ico`
@@ -398,7 +379,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		w.Write([]byte(body)) 
 		
-	}else {   //返回非文本类型，用stream模式处理
+	}else if strings.Contains(string(resp.Header.Get(`content-type`)),`application/x-www-form-urlencoded`) {
+		body, _ := ioutil.ReadAll(resp.Body)
+		fmt.Println (len(body))
+		answer, err := url.ParseQuery(string(body))
+		if err != nil{
+			fmt.Println(err.Error() )	
+		}
+		for k,v:= range answer {
+			fmt.Fprintf(w,k)
+			fmt.Fprintf(w,v[0])
+		}
+
+
+	} else{   //返回非文本类型，用stream模式处理
 		reader := bufio.NewReader(resp.Body)
 		caches := make([]byte, 10240) 
 		for {
