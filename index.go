@@ -381,7 +381,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 	}else if strings.Contains(string(resp.Header.Get(`content-type`)),`application/x-www-form-urlencoded`) {
 		body, _ := ioutil.ReadAll(resp.Body)
-		if resp.Header.Get(`Content-Encoding`) == `gzip`{
+	/*	if resp.Header.Get(`Content-Encoding`) == `gzip`{
 			body,err = gzipdecode(body)
 			if err != nil {
 				panic(err)
@@ -396,7 +396,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w,"k=%s\r\n",k)
 			fmt.Fprintf(w,"v=%s\r\n",v[0])
 		}
-
+	*/
+		w.Write([]byte(body))
 
 	} else{   //返回非文本类型，用stream模式处理
 		reader := bufio.NewReader(resp.Body)
@@ -480,6 +481,8 @@ func modifylink(s string,realhost string) string{
 	tempstr = strings.Replace(tempstr,`"url":"https://`,`"url":"` +zhost ,-1)
 	tempstr = strings.Replace(tempstr,`"url":"/`,`"url":"` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`='/`,`='` +zhost + realhost + `/`, -1)
+
+	tempstr = strings.Replace(tempstr,`="//`,`="` +zhost , -1)
 	tempstr = strings.Replace(tempstr,`="/`,`="` +zhost + realhost + `/`, -1)
 	
 	temp = strings.Replace(tempstr,`("//`,`("` +zhost, -1)
