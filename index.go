@@ -210,6 +210,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			if err = rows.Scan(&cookiename,&cookievalue,&cookiedomain,&cookiepath); err != nil {
 				fmt.Println(err.Error() )	
 			}else{
+				cookiedomain = strings.TrimPrefix(cookiedomain,`.`) //去掉首位的.
 				if strings.HasSuffix(u.Host,cookiedomain) &&  strings.HasPrefix(u.Path,cookiepath) {
 					req.AddCookie(&http.Cookie{
 						Name:    cookiename,
@@ -481,7 +482,7 @@ func modifylink(s string,realhost string) string{
 	tempstr = strings.Replace(tempstr,`"url":"https://`,`"url":"` +zhost ,-1)
 	tempstr = strings.Replace(tempstr,`"url":"/`,`"url":"` +zhost + realhost + `/`, -1)
 	tempstr = strings.Replace(tempstr,`='/`,`='` +zhost + realhost + `/`, -1)
-
+	tempstr = strings.Replace(tempstr,`value="https://`,`value="` + zhost,-1)
 	tempstr = strings.Replace(tempstr,`="//`,`="` +zhost , -1)
 	tempstr = strings.Replace(tempstr,`="/`,`="` +zhost + realhost + `/`, -1)
 	
