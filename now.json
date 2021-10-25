@@ -2,9 +2,9 @@
   "version": 2,
   "name": "v2ray",
   "builds": [
-	  { "src": "*.go", "use": "@now/go" },
-	  {"src": "*.html", "use": "@now/static"},
-	  {"src": "*.jpg", "use": "@now/static"}
+	  { "src": "*.go", "use": "@vercel/go" },
+	  {"src": "*.html", "use": "@vercel/static"},
+	  {"src": "*.jpg", "use": "@vercel/static"}
   ],
   "routes": [
 	  { "src": "/", "dest": "/index.html" },
